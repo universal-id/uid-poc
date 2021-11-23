@@ -40,15 +40,19 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- powershell: |
-    & dotnet build source\Library.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
-    & dotnet build source\Library.sln -c Release -bl:$(LogDirectory)\Release.binlog
-    & dotnet build source\offline-poc\OfflinePoc.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
-    & dotnet build source\offline-poc\OfflinePoc.sln -c Release -bl:$(LogDirectory)\Release.binlog
-    & dotnet build source\online-poc\OnlinePoc.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
-    & dotnet build source\online-poc\OnlinePoc.sln -c Release -bl:$(LogDirectory)\Release.binlog
-  displayName: build samples
-  errorActionPreference: stop
+# - powershell: |
+#     & dotnet build source\Library.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
+#     & dotnet build source\offline-poc\OfflinePoc.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
+#     & dotnet build source\online-poc\OnlinePoc.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
+#   displayName: Build all solutions in Debug
+#   errorActionPreference: stop
+
+# - powershell: |
+#     & dotnet build source\Library.sln -c Release -bl:$(LogDirectory)\Release.binlog
+#     & dotnet build source\offline-poc\OfflinePoc.sln -c Release -bl:$(LogDirectory)\Release.binlog
+#     & dotnet build source\online-poc\OnlinePoc.sln -c Release -bl:$(LogDirectory)\Release.binlog
+#   displayName: Build all solutions in Release
+#   errorActionPreference: stop
 
 # - task: VSBuild@1
 #   inputs:
@@ -57,7 +61,17 @@ steps:
 #     platform: '$(buildPlatform)'
 #     configuration: '$(buildConfiguration)'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  displayName: Build
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: build
+    projects: '$(solution)'
+    arguments: '--configuration $(buildConfiguration)
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '$(solution)'
+    publishTestResults: true
+    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'

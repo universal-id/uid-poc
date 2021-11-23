@@ -29,28 +29,28 @@ public class IdManagementApiTests : TestsBase
 {
     public IdManagementApiTests(ITestOutputHelper outputHelper) : base(outputHelper) {} // Wires up test logging
 
-    [Fact] /// (Sub)-Feature: Identity creation.
-    public async void IdBoxCreationTest()
-    {
-        using (var testContext = new IdBoxTestContext(nameof(IdBoxCreationTest), this))
-        {
-            var (identityService, callContext) = testContext.CreateAndVerifyEmptyTestIdBoxThenGetParameters();
-            var coreIdentity = identityService.CreateAndVerifyCoreIdentity();
-        }
-    }
+    // [Fact] /// (Sub)-Feature: Identity creation.
+    // public async void IdBoxCreationTest()
+    // {
+    //     using (var testContext = new IdBoxTestContext(nameof(IdBoxCreationTest), this))
+    //     {
+    //         var (identityService, callContext) = testContext.CreateAndVerifyEmptyTestIdBoxThenGetParameters();
+    //         var coreIdentity = identityService.CreateAndVerifyCoreIdentity();
+    //     }
+    // }
 
-    [Fact] /// (Sub)-Feature: Identity creation - User can create identity box and identity.
-    public async void CoreIdentityInfoCrudTest()
-    {
-        using (var testContext = new IdBoxTestContext(nameof(CoreIdentityInfoCrudTest), this))
-        {
-            var (identityClient, callContext, coreIdentity) = testContext.CreateAndVerifyTestCoreIdentityThenGetParameters();
-            identityClient.SetPropertyInfo(IdentityInfo.Name, "SomeName").Should().BeOfType<string>().Should().BeEquivalentTo<string>("SomeName");
-            identityClient.SetPropertyInfo(IdentityInfo.Image, testContext.GenerateProfileImage()).Should().NotBeNull();
-            identityClient.DeletePropertyInfo(IdentityInfo.Image);
-            identityClient.GetPropertyInfo(IdentityInfo.Image).Should().BeNull();
-        }
-    } 
+    // [Fact] /// (Sub)-Feature: Identity creation - User can create identity box and identity.
+    // public async void CoreIdentityInfoCrudTest()
+    // {
+    //     using (var testContext = new IdBoxTestContext(nameof(CoreIdentityInfoCrudTest), this))
+    //     {
+    //         var (identityClient, callContext, coreIdentity) = testContext.CreateAndVerifyTestCoreIdentityThenGetParameters();
+    //         identityClient.SetPropertyInfo(IdentityInfo.Name, "SomeName").Should().BeOfType<string>().Should().BeEquivalentTo<string>("SomeName");
+    //         identityClient.SetPropertyInfo(IdentityInfo.Image, testContext.GenerateProfileImage()).Should().NotBeNull();
+    //         identityClient.DeletePropertyInfo(IdentityInfo.Image);
+    //         identityClient.GetPropertyInfo(IdentityInfo.Image).Should().BeNull();
+    //     }
+    // } 
 }
 
 public static class IdentityClientTestContextExtensions

@@ -40,12 +40,22 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+- powershell: |
+    & dotnet build source\Library.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
+    & dotnet build source\Library.sln -c Release -bl:$(LogDirectory)\Release.binlog
+    & dotnet build source\offline-poc\OfflinePoc.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
+    & dotnet build source\offline-poc\OfflinePoc.sln -c Release -bl:$(LogDirectory)\Release.binlog
+    & dotnet build source\online-poc\OnlinePoc.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
+    & dotnet build source\online-poc\OnlinePoc.sln -c Release -bl:$(LogDirectory)\Release.binlog
+  displayName: build samples
+  errorActionPreference: stop
+
+# - task: VSBuild@1
+#   inputs:
+#     solution: '$(solution)'
+#     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+#     platform: '$(buildPlatform)'
+#     configuration: '$(buildConfiguration)'
 
 - task: VSTest@2
   inputs:

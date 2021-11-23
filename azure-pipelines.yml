@@ -66,7 +66,7 @@ steps:
   inputs:
     command: build
     projects: '$(solution)'
-    arguments: '--configuration $(buildConfiguration)
+    arguments: '--configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: Test

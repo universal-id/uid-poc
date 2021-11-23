@@ -20,14 +20,6 @@ variables:
 
 steps:
 
-# - powershell: |
-#     $ProgressPreference = 'SilentlyContinue'
-#     Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile dotnet-install.ps1
-#     & .\dotnet-install.ps1 -Version $(DotNetVersion) -InstallDir "$env:ProgramFiles\dotnet\" -Verbose
-#     & dotnet --list-sdks
-#   displayName: install .NET $(DotNetVersion)
-#   errorActionPreference: stop
-
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK'
   inputs:
@@ -46,13 +38,6 @@ steps:
     command: restore
     projects: '$(solution)'
 
-
-# - task: NuGetToolInstaller@1
-
-# - task: NuGetCommand@2
-#   inputs:
-#     restoreSolution: '$(solution)'
-
 # - powershell: |
 #     & dotnet build source\Library.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
 #     & dotnet build source\offline-poc\OfflinePoc.sln -c Debug   -bl:$(LogDirectory)\Debug.binlog
@@ -66,13 +51,6 @@ steps:
 #     & dotnet build source\online-poc\OnlinePoc.sln -c Release -bl:$(LogDirectory)\Release.binlog
 #   displayName: Build all solutions in Release
 #   errorActionPreference: stop
-
-# - task: VSBuild@1
-#   inputs:
-#     solution: '$(solution)'
-#     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-#     platform: '$(buildPlatform)'
-#     configuration: '$(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: Build

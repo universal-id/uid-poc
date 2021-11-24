@@ -1,4 +1,5 @@
 using System;
+using UniversalIdentity.Library.Cryptography;
 
 namespace UniversalIdentity.Library.Storage
 {
@@ -21,7 +22,8 @@ namespace UniversalIdentity.Library.Storage
 
         public IdentityStorage CreateSeedIdentity()
         {
-            throw new NotImplementedException();
+            var identityStorage = this.IdBoxStorage.CreateSeedIdentity();
+            return identityStorage;
         }
     }
 }

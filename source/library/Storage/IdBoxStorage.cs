@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using UniversalIdentity.Library.Cryptography;
 
 namespace UniversalIdentity.Library.Storage
 {
-    public class IdBoxStorage
+    public class IdBoxStorage : IJsonSerializable<IdBoxStorage>
     {
         public string Path;
 
@@ -21,20 +23,50 @@ namespace UniversalIdentity.Library.Storage
             this.Repository.Init();            
         }
 
+        public IdentityStorage CreateSeedIdentity()
+        {
+            var key = new EthKey();
+            string publicKey = key.GetPublicKey();
+            string identifier = key.GetIdentifier();
+
+            var identityStorage = new IdentityStorage()
+            {
+                Identifier = identifier,
+                Level = ValueLevel.MediumLow,
+                Keys = new [] { new KeyStorage() {
+                     Identifier = identifier,
+                     PublicKey = publicKey,
+                     Level = ValueLevel.MediumLow,
+                     Created = Helper.ConvertToUnixTime(DateTime.UtcNow)
+                }}
+            };
+
+            return identityStorage;
+        }
+
         public Dictionary<string, IdentityStorage> Identities = new Dictionary<string, IdentityStorage>(StringComparer.OrdinalIgnoreCase);
 
-        public string? Main { get; set; }
+        public string? Primary { get; set; }
 
-        public void Save()
+        public IdentityStorage SaveIdentity(IdentityStorage identityStorage)
         {
-
+            Identities[identityStorage.Identifier] = identityStorage;
+            this.Repository.UpdateOneFile($"identities", $"f{identityStorage.Identifier}", identityStorage.ToJson().ToString());
+            var fileContents = this.Repository.GetFileContents($"identities", $"f{identityStorage.Identifier}");
+            var updatedIdentityStorage = new IdentityStorage();
+            var updatedIdentityJson = new JObject(fileContents);
+            updatedIdentityStorage.FromJson(updatedIdentityJson);
+            return updatedIdentityStorage;
         }
 
-        public void Load()
+        public void FromJson(JObject documentJson)
         {
-
+            throw new NotImplementedException();
         }
 
-
+        public JObject ToJson()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

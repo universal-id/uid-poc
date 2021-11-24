@@ -8,7 +8,7 @@ using Nethereum.Util;
 using Nethereum.Hex.HexConvertors.Extensions;
 using System;
 
-namespace UniversalIdentity.Library.Test
+namespace UniversalIdentity.Library.Test.Specialized
 {
     /// Specialized functionality: Cryptography
     public class CryptographyTests : TestsBase

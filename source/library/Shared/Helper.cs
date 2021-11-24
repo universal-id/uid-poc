@@ -1,3 +1,4 @@
+using System;
 using UniversalIdentity.Library.Cryptography;
 
 namespace UniversalIdentity.Library;
@@ -31,5 +32,25 @@ public static class Helper
     {
         var address = key.GetPublicAddress();
         return $"{KeyIdentifierPrefix}{address}";
+    }
+
+    public static DateTime UnixEpochDateTime = new DateTime(1970, 1, 1);
+
+    public static long ConvertToUnixTime(this DateTime startDateTime, int additionalSeconds = 0)
+    {
+        if (startDateTime == DateTime.MinValue)
+        {
+            return 0;
+        }
+
+        var targetDateTime = startDateTime.AddSeconds(additionalSeconds);
+        var unixTime = (int)(targetDateTime - UnixEpochDateTime).TotalSeconds;
+        return unixTime;
+    }
+
+    public static DateTime ConvertFromUnixTime(this long unixTime)
+    {
+        var dateTime = UnixEpochDateTime.AddSeconds(unixTime);
+        return dateTime;
     }
 }

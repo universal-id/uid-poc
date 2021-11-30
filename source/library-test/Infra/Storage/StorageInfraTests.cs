@@ -6,6 +6,8 @@ using Nethereum.Util;
 using Nethereum.Hex.HexConvertors.Extensions;
 using System.IO;
 using System;
+using System.Collections.Generic;
+using System.Security.Principal;
 
 namespace UniversalIdentity.Library.Test.Infra.Storage;
 
@@ -82,6 +84,32 @@ public class StorageInfraTests : TestsBase
 
             idBoxStorage.PrimaryIdentity = seedIdentityStorage.Identifier;
             idBoxStorage.PrimaryIdentity.Should().Equals(seedIdentityStorage.Identifier);
+        }
+    }
+
+    [Fact] /// Developer can programmatically
+           /// - Updates an existing identity with added key information
+    public void UpdatesExistingIdentityWithAddedKeyInformationTest()
+    {
+        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        {
+            IdBoxStorage? idBoxStorage = testContext.IdBoxStorage;
+            idBoxStorage.InitializeStorage();
+
+            IdentityStorage? seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
+            seedIdentityStorage.Should().NotBeNull();
+
+            seedIdentityStorage.Level = ValueLevel.VeryHigh;
+            var identityKeysList = new List<KeyStorage>() {
+                new KeyStorage(){Identifier = "Identifier1",Level= ValueLevel.High, Created=1,PublicKey=""},
+                new KeyStorage(){Identifier = "Identifier2",Level= ValueLevel.Low, Created=1,PublicKey=""},
+            };
+            seedIdentityStorage.Keys = identityKeysList.ToArray();
+
+            var savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
+            savedSeedIdentityStorage.Should().NotBeNull();
+            savedSeedIdentityStorage.Level.Should().Be(ValueLevel.VeryHigh);
+            savedSeedIdentityStorage.Keys.Should().HaveCount(2);
         }
     }
 }

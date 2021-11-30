@@ -6,15 +6,16 @@ namespace UniversalIdentity.Library.Storage
     public class IdentityStorage : IJsonSerializable<IdentityStorage>
     {
         public string Identifier { get; set; }
-        public ValueLevel Level { get; internal set; }
-        public KeyStorage[] Keys { get; internal set; }
+        public ValueLevel Level { get;  set; }
+        public KeyStorage[] Keys { get;  set; }
 
         public void FromJson(JObject documentJson)
         {
             this.Identifier = (string)documentJson["identifier"];
             var keys = (JArray)documentJson["keys"];
             var identityKeysList = new List<KeyStorage>();
-            foreach(var key in keys)
+            Level = (ValueLevel)(int)documentJson["level"];
+            foreach (var key in keys)
             {
                 var identityKey = new KeyStorage();
                 identityKey.Identifier = (string)key["identifier"];
@@ -31,6 +32,7 @@ namespace UniversalIdentity.Library.Storage
             identityJson["identifier"] = this.Identifier;
             var keys = new JArray();
             identityJson["keys"] = keys;
+            identityJson["level"] = (int)Level;
             foreach(var identityKey in this.Keys)
             {
                 var key = new JObject();

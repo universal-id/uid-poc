@@ -112,4 +112,29 @@ public class StorageInfraTests : TestsBase
             savedSeedIdentityStorage.Keys.Should().HaveCount(2);
         }
     }
+
+    [Fact] /// Developer can programmatically
+           /// - Updates an existing identity with identity infon
+    public void UpdatesAnExistingIdentityWithIdentityInfo()
+    {
+        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        {
+            IdBoxStorage? idBoxStorage = testContext.IdBoxStorage;
+            idBoxStorage.InitializeStorage();
+
+            IdentityStorage? seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
+            seedIdentityStorage.Should().NotBeNull();
+
+            var info = new List<Info>() {
+                new Info(){Key="K1",Value="V1"},
+                new Info(){Key="K2",Value="V2"},
+            };
+            seedIdentityStorage.Info = info.ToArray();
+
+            var savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
+            savedSeedIdentityStorage.Should().NotBeNull();
+            savedSeedIdentityStorage.Info.Should().HaveCount(2);
+        }
+    }
+
 }

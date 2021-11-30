@@ -50,20 +50,20 @@ public class StorageInfraTests : TestsBase
         }
     }
 
-    // [Fact] /// Developer can programmatically
-    // /// - Create a seed core identity object (using user and agent service objects with private keys)
-    // public void IdBoxStorageCreateAndSaveSeedIdentityTest()
-    // {
-    //     using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
-    //     {
-    //         var idBoxStorage = testContext.IdBoxStorage;
-    //         idBoxStorage.InitializeStorage();
+    [Fact] /// Developer can programmatically
+           /// - Create a seed core identity object (using user and agent service objects with private keys)
+    public void IdBoxStorageCreateAndSaveSeedIdentityTest()
+    {
+        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        {
+            var idBoxStorage = testContext.IdBoxStorage;
+            idBoxStorage.InitializeStorage();
 
-    //         var seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
-    //         seedIdentityStorage.Should().NotBeNull();
+            var seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
+            seedIdentityStorage.Should().NotBeNull();
 
-    //         var savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
-    //         savedSeedIdentityStorage.Should().NotBeNull();
-    //     }
-    // }
+            var savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
+            savedSeedIdentityStorage.Should().NotBeNull();
+        }
+    }
 }

@@ -54,7 +54,7 @@ namespace UniversalIdentity.Library.Storage
             this.Repository.UpdateOneFile($"identities", $"f{identityStorage.Identifier}", identityStorage.ToJson().ToString());
             var fileContents = this.Repository.GetFileContents($"identities", $"f{identityStorage.Identifier}");
             var updatedIdentityStorage = new IdentityStorage();
-            var updatedIdentityJson = new JObject(fileContents);
+            var updatedIdentityJson = JObject.Parse(fileContents);
             updatedIdentityStorage.FromJson(updatedIdentityJson);
             return updatedIdentityStorage;
         }

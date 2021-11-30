@@ -151,7 +151,7 @@ namespace UniversalIdentity.Library.Storage
                     }                    
                 }
 
-                return keepFolder || startNode.NextFolder.Entries.Count == 0;
+                return !keepFolder || startNode.NextFolder.Entries.Count == 0;
             }
             else if(startNode.ObjectType == ObjectType.File)
             {

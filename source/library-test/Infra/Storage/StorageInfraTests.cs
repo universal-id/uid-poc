@@ -66,4 +66,22 @@ public class StorageInfraTests : TestsBase
             savedSeedIdentityStorage.Should().NotBeNull();
         }
     }
+
+
+    [Fact] /// Developer can programmatically
+           /// - Creates a seed identity as the first primary identity.
+    public void IdBoxStorageCreateAndMakeSeedIdentityAsFirstPrimaryIdentityTest()
+    {
+        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        {
+            var idBoxStorage = testContext.IdBoxStorage;
+            idBoxStorage.InitializeStorage();
+
+            var seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
+            seedIdentityStorage.Should().NotBeNull();
+
+            idBoxStorage.PrimaryIdentity = seedIdentityStorage.Identifier;
+            idBoxStorage.PrimaryIdentity.Should().Equals(seedIdentityStorage.Identifier);
+        }
+    }
 }

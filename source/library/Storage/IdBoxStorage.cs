@@ -20,7 +20,7 @@ namespace UniversalIdentity.Library.Storage
         public void InitializeStorage()
         {
             if (this.Repository == null) throw new Exception("Expected repository to be valid before initializing storage.");
-            this.Repository.Init();            
+            this.Repository.Init();
         }
 
         public IdentityStorage CreateSeedIdentity()
@@ -33,7 +33,7 @@ namespace UniversalIdentity.Library.Storage
             {
                 Identifier = identifier,
                 Level = ValueLevel.MediumLow,
-                Keys = new [] { new KeyStorage() {
+                Keys = new[] { new KeyStorage() {
                      Identifier = identifier,
                      PublicKey = publicKey,
                      Level = ValueLevel.MediumLow,
@@ -61,12 +61,9 @@ namespace UniversalIdentity.Library.Storage
 
         public void FromJson(JObject documentJson)
         {
-            throw new NotImplementedException();
+            PrimaryIdentity = (string)documentJson["primaryIdentity"];
         }
 
-        public JObject ToJson()
-        {
-            throw new NotImplementedException();
-        }
+        public JObject ToJson() => new() { ["primaryIdentity"] = PrimaryIdentity };
     }
 }

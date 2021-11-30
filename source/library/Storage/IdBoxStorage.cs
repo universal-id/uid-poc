@@ -46,7 +46,7 @@ namespace UniversalIdentity.Library.Storage
 
         public Dictionary<string, IdentityStorage> Identities = new Dictionary<string, IdentityStorage>(StringComparer.OrdinalIgnoreCase);
 
-        public string? Primary { get; set; }
+        public string? PrimaryIdentity { get; set; }
 
         public IdentityStorage SaveIdentity(IdentityStorage identityStorage)
         {

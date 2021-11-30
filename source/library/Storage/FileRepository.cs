@@ -108,7 +108,6 @@ namespace UniversalIdentity.Library.Storage
                 var fileHash = folderEntry.Hash;
                 if (string.IsNullOrEmpty(fileHash)) throw new Exception($"Expected entry for file '{fileName}' under under path '{filePath}' to have a valid hash");
                 var repositoryBoxFilePath = IO.Path.Combine(this.Path, FileRepositoryHelper.BoxFolder, FileRepositoryHelper.Objects, fileHash);
-                folderInfo = FileRepositoryHelper.GetFolderInfo(this, folderEntry.Hash);
                 var fileContents = File.ReadAllText(repositoryBoxFilePath);
                 return fileContents;
             }

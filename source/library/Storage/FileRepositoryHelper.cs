@@ -65,11 +65,11 @@ namespace UniversalIdentity.Library.Storage
         public static IEnumerable<string> GetSegments(string filePath)
         {
             filePath.Trim();
-            filePath.Trim('/');
+            filePath.Trim(Path.DirectorySeparatorChar);
 
             if(string.IsNullOrEmpty(filePath)) return null;
 
-            var segments = filePath.Split('/');
+            var segments = filePath.Split(Path.DirectorySeparatorChar);
             return segments.Where(segment => !string.IsNullOrEmpty(segment));
         }
 

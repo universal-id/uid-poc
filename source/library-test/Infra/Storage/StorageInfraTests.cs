@@ -137,4 +137,24 @@ public class StorageInfraTests : TestsBase
         }
     }
 
+    [Fact] /// Developer can programmatically
+           /// - Reads identity information given an identifier
+    public void IdBoxStorageCreateAndSaveSeedIdentity2Test()
+    {
+        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        {
+            IdBoxStorage? idBoxStorage = testContext.IdBoxStorage;
+            idBoxStorage.InitializeStorage();
+
+            IdentityStorage? seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
+            seedIdentityStorage.Should().NotBeNull();
+
+            IdentityStorage? savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
+            savedSeedIdentityStorage.Should().NotBeNull();
+
+            IdentityStorage? identityStorage = idBoxStorage.GetIdentity(savedSeedIdentityStorage.Identifier);
+            identityStorage.Should().NotBeNull();
+            idBoxStorage.ToJson().Should().Equals(savedSeedIdentityStorage.ToJson());
+        }
+    }
 }

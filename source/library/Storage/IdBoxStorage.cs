@@ -65,6 +65,16 @@ namespace UniversalIdentity.Library.Storage
             return updatedIdentityStorage;
         }
 
+        public IdentityStorage GetIdentity(string identifier)
+        {
+            var fileContents = this.Repository.GetFileContents($"identities", $"f{identifier}");
+            var result = new IdentityStorage();
+            var updatedIdentityJson = JObject.Parse(fileContents);
+            result.FromJson(updatedIdentityJson);
+
+            return result;
+        }
+
         public void FromJson(JObject documentJson)
         {
             PrimaryIdentity = (string)documentJson["primaryIdentity"];

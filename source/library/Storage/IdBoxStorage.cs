@@ -38,7 +38,13 @@ namespace UniversalIdentity.Library.Storage
                      PublicKey = publicKey,
                      Level = ValueLevel.MediumLow,
                      Created = Helper.ConvertToUnixTime(DateTime.UtcNow)
-                }}
+                }},
+                Info = new[]
+                {
+                    new Info{ 
+                        Key ="Key1",Value="Value1"
+                    }
+                }
             };
 
             return identityStorage;

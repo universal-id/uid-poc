@@ -74,7 +74,7 @@ public class StorageInfraTests : TestsBase
            /// - Creates a seed identity as the first primary identity.
     public void IdBoxStorageCreateAndMakeSeedIdentityAsFirstPrimaryIdentityTest()
     {
-        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateAndMakeSeedIdentityAsFirstPrimaryIdentityTest), this))
         {
             var idBoxStorage = testContext.IdBoxStorage;
             idBoxStorage.InitializeStorage();
@@ -91,7 +91,7 @@ public class StorageInfraTests : TestsBase
            /// - Updates an existing identity with added key information
     public void UpdatesExistingIdentityWithAddedKeyInformationTest()
     {
-        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        using (var testContext = new IdBoxStorageTestContext(nameof(UpdatesExistingIdentityWithAddedKeyInformationTest), this))
         {
             IdBoxStorage? idBoxStorage = testContext.IdBoxStorage;
             idBoxStorage.InitializeStorage();
@@ -117,7 +117,7 @@ public class StorageInfraTests : TestsBase
            /// - Updates an existing identity with identity infon
     public void UpdatesAnExistingIdentityWithIdentityInfo()
     {
-        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        using (var testContext = new IdBoxStorageTestContext(nameof(UpdatesAnExistingIdentityWithIdentityInfo), this))
         {
             IdBoxStorage? idBoxStorage = testContext.IdBoxStorage;
             idBoxStorage.InitializeStorage();
@@ -139,9 +139,9 @@ public class StorageInfraTests : TestsBase
 
     [Fact] /// Developer can programmatically
            /// - Reads identity information given an identifier
-    public void IdBoxStorageCreateAndSaveSeedIdentity2Test()
+    public void ReadsIdentityInformationGivenAnIdentifierTest()
     {
-        using (var testContext = new IdBoxStorageTestContext(nameof(IdBoxStorageCreateSeedIdentityTest), this))
+        using (var testContext = new IdBoxStorageTestContext(nameof(ReadsIdentityInformationGivenAnIdentifierTest), this))
         {
             IdBoxStorage? idBoxStorage = testContext.IdBoxStorage;
             idBoxStorage.InitializeStorage();
@@ -154,7 +154,7 @@ public class StorageInfraTests : TestsBase
 
             IdentityStorage? identityStorage = idBoxStorage.GetIdentity(savedSeedIdentityStorage.Identifier);
             identityStorage.Should().NotBeNull();
-            idBoxStorage.ToJson().Should().Equals(savedSeedIdentityStorage.ToJson());
+            identityStorage.ToJson().ToString().Should().Equals(savedSeedIdentityStorage.ToJson().ToString());
         }
     }
 }

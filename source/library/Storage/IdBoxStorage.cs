@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UniversalIdentity.Library.Cryptography;
 
@@ -41,7 +43,7 @@ namespace UniversalIdentity.Library.Storage
                 }},
                 Info = new[]
                 {
-                    new Info{ 
+                    new Info{
                         Key ="Key1",Value="Value1"
                     }
                 }
@@ -78,8 +80,16 @@ namespace UniversalIdentity.Library.Storage
         public void FromJson(JObject documentJson)
         {
             PrimaryIdentity = (string)documentJson["primaryIdentity"];
+            Identities = JsonConvert.DeserializeObject<Dictionary<string, IdentityStorage>>((string)documentJson["identities"]);
         }
 
-        public JObject ToJson() => new() { ["primaryIdentity"] = PrimaryIdentity };
+        public JObject ToJson()
+        {
+            return new()
+            {
+                ["primaryIdentity"] = PrimaryIdentity,
+                ["identities"] = JsonConvert.SerializeObject(Identities)
+            };
+        }
     }
 }

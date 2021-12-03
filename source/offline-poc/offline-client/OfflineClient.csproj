@@ -12,4 +12,8 @@
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\..\library\Library.csproj" />
+	</ItemGroup>
+
 </Project>

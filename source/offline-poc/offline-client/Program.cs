@@ -1,20 +1,26 @@
-﻿using System.CommandLine;
+﻿using Newtonsoft.Json.Linq;
+using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
+using UniversalIdentity.Library.Storage;
 
 namespace MyNamespace
 {
-
+    // Creates a new identity box
+    // Opens an identity box in interactive mode
+    // Lists identities
+    // Accesses primary identity
+    // Accesses identity information
     class Program
     {
         static async Task Main(string[] args)
         {
             RootCommand? idbox = new("idbox");
-            Command? box = new("box");
-            Command? create = new("create");
-            Command? open = new("open");
-            Command? ids = new("ids");
-            Command? list = new("list");
+            Command box = new("box");
+            Command create = new("create");
+            Command open = new("open");
+            Command ids = new("ids");
+            Command list = new("list");
             idbox.Add(box);
             box.Add(create);
             box.Add(open);
@@ -37,19 +43,35 @@ namespace MyNamespace
 
             await idbox.InvokeAsync(args);
 
+            //CreateHandler(@"c:\idbox");
+            //await OpenHandler(@"c:\idbox\0xaF3eB19fcA6E327A6972796Febb43c1D46eBDb6b");
+
+            // Creates a new identity box
             void CreateHandler(string fileName)
             {
-                FileInfo? fileInfo = new(Path.Combine(Path.GetTempPath(), fileName));
-                using StreamWriter? writer = new(fileInfo.FullName);
-                writer.WriteLine("item1");
-                writer.WriteLine("item2");
+
+                if (!Directory.Exists(fileName)) Directory.CreateDirectory(fileName);
+                IdBoxStorage idBoxStorage = new(fileName);
+
+
+                idBoxStorage.InitializeStorage();
+
+                IdentityStorage? seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
+                IdentityStorage? savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
 
                 Console.WriteLine($"IdBox created from location {Path.Combine(Path.GetTempPath(), fileName)}");
             }
 
             async Task OpenHandler(string fileName)
             {
-                string text = await File.ReadAllTextAsync(Path.Combine(Path.GetTempPath(), fileName));
+                IEnumerable<string>? segments = FileRepositoryHelper.GetSegments(fileName);
+                IdBoxStorage idBoxStorage = new(fileName);
+                string? fileContents = idBoxStorage.Repository.GetFileContents($"identities", $"f{segments.Last()}");
+                IdentityStorage? updatedIdentityStorage = new IdentityStorage();
+                JObject? updatedIdentityJson = JObject.Parse(fileContents);
+                updatedIdentityStorage.FromJson(updatedIdentityJson);
+
+                string text = idBoxStorage.ToJson().ToString();
                 await File.WriteAllTextAsync(Path.Combine(Path.GetTempPath(), "open"), text);
 
                 Console.WriteLine($"IdBox opened from location {Path.Combine(Path.GetTempPath(), fileName)}");

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -10,11 +11,13 @@ namespace UniversalIdentity.Library.Storage
     public class IdBoxStorage : IJsonSerializable<IdBoxStorage>
     {
         public string Path;
+        private string? primaryIdentity;
 
         public IdBoxStorage(string path)
         {
             this.Path = path;
             this.Repository = new FileRepository(path);
+            Identities = LoadIdentities();
         }
 
         public FileRepository Repository { get; set; }
@@ -52,13 +55,13 @@ namespace UniversalIdentity.Library.Storage
             return identityStorage;
         }
 
-        public Dictionary<string, IdentityStorage> Identities = new Dictionary<string, IdentityStorage>(StringComparer.OrdinalIgnoreCase);
-
-        public string? PrimaryIdentity { get; set; }
+        //public Dictionary<string, IdentityStorage> Identities = new Dictionary<string, IdentityStorage>(StringComparer.OrdinalIgnoreCase);
+        public IEnumerable<IdentityStorage> Identities { get; set; }
+        public string? PrimaryIdentity { get => Identities.FirstOrDefault(x => x.IsPrimary).Identifier; set => primaryIdentity = value; }
 
         public IdentityStorage SaveIdentity(IdentityStorage identityStorage)
         {
-            Identities[identityStorage.Identifier] = identityStorage;
+            //Identities[identityStorage.Identifier] = identityStorage;
             this.Repository.UpdateOneFile($"identities", $"f{identityStorage.Identifier}", identityStorage.ToJson().ToString());
             var fileContents = this.Repository.GetFileContents($"identities", $"f{identityStorage.Identifier}");
             var updatedIdentityStorage = new IdentityStorage();
@@ -67,6 +70,20 @@ namespace UniversalIdentity.Library.Storage
             return updatedIdentityStorage;
         }
 
+        public IEnumerable<IdentityStorage> LoadIdentities()
+        {
+            IEnumerable<string> files = Repository.GetFiles("identities");
+
+            foreach (var file in files)
+            {
+                var fileContents = this.Repository.GetFileContents("identities", $"{file}");
+                var result = new IdentityStorage();
+                var updatedIdentityJson = JObject.Parse(fileContents);
+                result.FromJson(updatedIdentityJson);
+
+                yield return result;
+            }
+        }
         public IdentityStorage GetIdentity(string identifier)
         {
             var fileContents = this.Repository.GetFileContents($"identities", $"f{identifier}");
@@ -80,7 +97,7 @@ namespace UniversalIdentity.Library.Storage
         public void FromJson(JObject documentJson)
         {
             PrimaryIdentity = (string)documentJson["primaryIdentity"];
-            Identities = JsonConvert.DeserializeObject<Dictionary<string, IdentityStorage>>((string)documentJson["identities"]);
+            Identities = JsonConvert.DeserializeObject<IEnumerable<IdentityStorage>>((string)documentJson["identities"]);
         }
 
         public JObject ToJson()

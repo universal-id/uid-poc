@@ -1,10 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using OfflineClient.Extensions;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 using UniversalIdentity.Library.Storage;
 
-namespace MyNamespace
+namespace OfflineClient
 {
     // Creates a new identity box
     // Opens an identity box in interactive mode
@@ -15,17 +14,29 @@ namespace MyNamespace
     {
         static async Task Main(string[] args)
         {
-            RootCommand? idbox = new("idbox");
+            RootCommand idbox = new("idbox");
             Command box = new("box");
             Command create = new("create");
             Command open = new("open");
             Command ids = new("ids");
             Command list = new("list");
+            Command getPrimary = new("getPrimary");
+            Command id = new("id");
+            Command select = new("select");
+            Command get = new("get");
+            Command info = new("info");
+            Command set = new("set");
+
             idbox.Add(box);
             box.Add(create);
             box.Add(open);
             idbox.Add(ids);
             ids.Add(list);
+            ids.Add(getPrimary);
+            id.Add(select);
+            id.Add(get);
+            id.Add(info);
+            info.Add(set);
 
             Argument argument = new("fileName");
             create.AddArgument(argument);
@@ -40,11 +51,32 @@ namespace MyNamespace
             list.AddOption(detailOption);
             list.Handler = CommandHandler.Create(ListHandler);
 
+            getPrimary.Handler = CommandHandler.Create(GetPrimary);
 
-            await idbox.InvokeAsync(args);
+            Argument selectArgument = new("identifier");
+            select.AddArgument(argument);
+            select.Handler = CommandHandler.Create<string>(SelectHandler);
+
+            get.AddOption(summaryOption);
+            get.AddOption(detailOption);
+            get.Handler = CommandHandler.Create(GetHandler);
+
+            Option<string> keyOption = new("--key", () => "");
+            Option<string> valueOption = new("--value", () => "");
+            set.AddOption(summaryOption);
+            set.AddOption(detailOption);
+            set.Handler = CommandHandler.Create(SetInfoHandler);
+
+
+            //await idbox.InvokeAsync(args);
 
             //CreateHandler(@"c:\idbox");
-            //await OpenHandler(@"c:\idbox\0xaF3eB19fcA6E327A6972796Febb43c1D46eBDb6b");
+            //OpenHandler(@"c:\idbox");
+            //ListHandler(true, false);
+            //GetPrimary();
+            //SelectHandler("did:eth:0x154886Be866F59C4D9065569877c3a04B2940FC5");
+            //GetHandler(true,false);
+            //SetInfoHandler("Name", "Yara");
 
             // Creates a new identity box
             void CreateHandler(string fileName)
@@ -56,37 +88,146 @@ namespace MyNamespace
 
                 idBoxStorage.InitializeStorage();
 
-                IdentityStorage? seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
-                IdentityStorage? savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
+                CreateSeedIdentityHandler();
 
                 Console.WriteLine($"IdBox created from location {Path.Combine(Path.GetTempPath(), fileName)}");
             }
 
-            async Task OpenHandler(string fileName)
+            void CreateSeedIdentityHandler()
             {
-                IEnumerable<string>? segments = FileRepositoryHelper.GetSegments(fileName);
-                IdBoxStorage idBoxStorage = new(fileName);
-                string? fileContents = idBoxStorage.Repository.GetFileContents($"identities", $"f{segments.Last()}");
-                IdentityStorage? updatedIdentityStorage = new IdentityStorage();
-                JObject? updatedIdentityJson = JObject.Parse(fileContents);
-                updatedIdentityStorage.FromJson(updatedIdentityJson);
+                string path = @"c:\idbox"; // TODO: Get from State json
+                IdBoxStorage idBoxStorage = new(path);
 
-                string text = idBoxStorage.ToJson().ToString();
-                await File.WriteAllTextAsync(Path.Combine(Path.GetTempPath(), "open"), text);
-
-                Console.WriteLine($"IdBox opened from location {Path.Combine(Path.GetTempPath(), fileName)}");
+                IdentityStorage seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
+                IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
             }
 
-            async Task ListHandler(bool detail, bool summary)
+            void SetAsPrimarydentityHandler()
             {
-                string text = await File.ReadAllTextAsync(Path.Combine(Path.GetTempPath(), "open"));
+                string path = @"c:\idbox"; // TODO: Get from State json
+                IdBoxStorage idBoxStorage = new(path);
 
-                if (detail)
-                    Console.WriteLine("Detail!");
-                else if (summary)
-                    Console.WriteLine("Summary!");
+                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == "did:eth:0x154886Be866F59C4D9065569877c3a04B2940FC5");
 
-                Console.WriteLine(text);
+                if (identity != null)
+                    identity.IsPrimary = true;
+
+                IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(identity);
+            }
+
+            // Opens an identity box
+            void OpenHandler(string path)
+            {
+                IdBoxStorage idBoxStorage = new(path);
+                List<IdentityStorage>? identities = idBoxStorage.Identities.ToList();
+                Console.WriteLine($"IdBox opened from location {Path.Combine(Path.GetTempPath(), path)}");
+
+                idBoxStorage.DisplayIdenetities();
+
+                // TODO: Save it to State json
+            }
+
+            // Lists identities
+            void ListHandler(bool detail, bool summary)
+            {
+                string path = @"c:\idbox"; // TODO: Gets from State json
+                IdBoxStorage idBoxStorage = new(path);
+
+                idBoxStorage.DisplayIdenetities(detail, summary);
+            }
+
+            // Accesses primary identity
+            void GetPrimary()
+            {
+                string path = @"c:\idbox"; // TODO: Gets from State json
+                IdBoxStorage idBoxStorage = new(path);
+
+                Console.WriteLine($"Primary Identity: {idBoxStorage.PrimaryIdentity}");
+            }
+
+            void SelectHandler(string identifier)
+            {
+                string path = @"c:\idbox"; // TODO: Gets from State json
+                IdBoxStorage idBoxStorage = new(path);
+
+                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == identifier);
+
+                if (identity == null)
+                {
+                    Console.WriteLine("Not found!");
+                }
+                else
+                    Console.WriteLine($"Identity selected with identifier: {identity.Identifier}");
+
+                // TODO: Save it to State json
+            }
+
+            void GetHandler(bool detail, bool summary)
+            {
+                // TODO: Gets from State json
+                string path = @"c:\idbox";
+                IdBoxStorage idBoxStorage = new(path);
+                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == "did:eth:0x154886Be866F59C4D9065569877c3a04B2940FC5");
+
+                if (identity == null)
+                {
+                    Console.WriteLine("Not found!");
+                }
+                else
+                {
+                    if (summary)
+                    {
+                        Console.WriteLine($"Identifier: {identity.Identifier}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Identifier: {identity.Identifier}");
+                        Console.WriteLine($"Level: {identity.Level}");
+
+                        Console.WriteLine("Keys:");
+                        foreach (KeyStorage key in identity.Keys)
+                        {
+                            Console.WriteLine($" Identifier: {key.Identifier}");
+                            Console.WriteLine($" Level: {key.Level}");
+                            Console.WriteLine($" Created: {key.Created}");
+                            Console.WriteLine($" PublicKey: {key.PublicKey}");
+                        }
+                    }
+                }
+            }
+
+            //idbox id info set --key k1--value v1
+            //Updated identity information 'k1' to 'v1'
+            void SetInfoHandler(string key, string value)
+            {
+                if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(value))
+                    Console.WriteLine("Enter a key and value option (for example: idbox id info set --key k1--value v1)!");
+
+                string path = @"c:\idbox"; // TODO: Gets from State json
+                IdBoxStorage idBoxStorage = new(path);
+
+                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == "did:eth:0x154886Be866F59C4D9065569877c3a04B2940FC5");
+
+                if (identity == null)
+                {
+                    Console.WriteLine("Not found!");
+                }
+                else
+                {
+                    Info? existedInfo = identity.Info.FirstOrDefault(x => x.Key == key);
+                    if (existedInfo == null)
+                    {
+                        List<Info> info = identity.Info.ToList();
+                        info.Add(new Info { Key = key, Value = value });
+                        identity.Info = info.ToArray();
+                    }
+                    else
+                        existedInfo.Value = value;
+
+                    IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(identity);
+
+                    Console.WriteLine($"Updated identity information '{key}' to '{value}'");
+                }
             }
         }
     }

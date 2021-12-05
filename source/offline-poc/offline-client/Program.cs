@@ -1,4 +1,5 @@
 ﻿using OfflineClient.Extensions;
+using OfflineClient.Models;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using UniversalIdentity.Library.Storage;
@@ -20,38 +21,47 @@ namespace OfflineClient
             Command open = new("open");
             Command ids = new("ids");
             Command list = new("list");
+            Command setPrimary = new("setPrimary");
             Command getPrimary = new("getPrimary");
             Command id = new("id");
             Command select = new("select");
             Command get = new("get");
             Command info = new("info");
             Command set = new("set");
+            Command createSeed = new("createSeed");
 
             idbox.Add(box);
             box.Add(create);
             box.Add(open);
             idbox.Add(ids);
+            idbox.Add(id);
             ids.Add(list);
+            ids.Add(setPrimary);
             ids.Add(getPrimary);
+            ids.Add(get);
             id.Add(select);
-            id.Add(get);
+            ids.Add(createSeed);
             id.Add(info);
             info.Add(set);
 
-            Argument argument = new("fileName");
+            Argument argument = new("path");
             create.AddArgument(argument);
             create.Handler = CommandHandler.Create<string>(CreateHandler);
 
             open.AddArgument(argument);
             open.Handler = CommandHandler.Create<string>(OpenHandler);
 
-            Option<bool> summaryOption = new("--summary", () => true);
-            Option<bool> detailOption = new("--detail", () => false);
+            Option<bool> summaryOption = new("--summary", () => false);
+            Option<bool> detailOption = new("--detail", () => true);
             list.AddOption(summaryOption);
             list.AddOption(detailOption);
             list.Handler = CommandHandler.Create(ListHandler);
 
-            getPrimary.Handler = CommandHandler.Create(GetPrimary);
+            createSeed.Handler = CommandHandler.Create(CreateSeedIdentityHandler);
+
+            getPrimary.Handler = CommandHandler.Create(GetPrimaryHandler);
+
+            setPrimary.Handler = CommandHandler.Create(SetAsPrimaryHandler);
 
             Argument selectArgument = new("identifier");
             select.AddArgument(argument);
@@ -59,7 +69,7 @@ namespace OfflineClient
 
             get.AddOption(summaryOption);
             get.AddOption(detailOption);
-            get.Handler = CommandHandler.Create(GetHandler);
+            get.Handler = CommandHandler.Create(GetSelectedIdentityHandler);
 
             Option<string> keyOption = new("--key", () => "");
             Option<string> valueOption = new("--value", () => "");
@@ -68,78 +78,106 @@ namespace OfflineClient
             set.Handler = CommandHandler.Create(SetInfoHandler);
 
 
-            //await idbox.InvokeAsync(args);
+            await idbox.InvokeAsync(args);
 
-            //CreateHandler(@"c:\idbox");
-            //OpenHandler(@"c:\idbox");
-            //ListHandler(true, false);
-            //GetPrimary();
-            //SelectHandler("did:eth:0x154886Be866F59C4D9065569877c3a04B2940FC5");
-            //GetHandler(true,false);
-            //SetInfoHandler("Name", "Yara");
+            //CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
+            //Console.WriteLine("**********************0");
+            //OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            //Console.WriteLine("**********************1");
+            //ListHandler(true, false); // idbox ids list [--summary true] or idbox ids list [--summary false]
+            //Console.WriteLine("**********************2");
+            //string identifier = CreateSeedIdentity(); // idbox ids createSeed
+            //Console.WriteLine("**********************3");
+            //ListHandler(true, false); // idbox ids list [--summary true] or idbox ids list [--summary false]
+            //Console.WriteLine("**********************4");
+            //SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+            //Console.WriteLine("**********************5");
+            //SetAsPrimaryHandler(); // idbox ids setPrimary
+            //Console.WriteLine("**********************6");
+            //GetPrimaryHandler(); // idbox ids getprimary
+            //Console.WriteLine("**********************7");
+            //GetSelectedIdentityHandler(true, false); // idbox id get --summary
+            //Console.WriteLine("**********************8");
+            //SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
 
             // Creates a new identity box
             void CreateHandler(string fileName)
             {
+                if (!Directory.Exists(fileName))
+                {
+                    Directory.CreateDirectory(fileName);
+                }
 
-                if (!Directory.Exists(fileName)) Directory.CreateDirectory(fileName);
                 IdBoxStorage idBoxStorage = new(fileName);
 
-
                 idBoxStorage.InitializeStorage();
-
-                CreateSeedIdentityHandler();
 
                 Console.WriteLine($"IdBox created from location {Path.Combine(Path.GetTempPath(), fileName)}");
             }
 
             void CreateSeedIdentityHandler()
             {
-                string path = @"c:\idbox"; // TODO: Get from State json
+                CreateSeedIdentity();
+            }
+            
+            string CreateSeedIdentity()
+            {
+                string path = new State().Load().Path;
                 IdBoxStorage idBoxStorage = new(path);
 
                 IdentityStorage seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
                 IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
+
+                Console.WriteLine($"SeedIdentity with Identifier{seedIdentityStorage.Identifier} is created!");
+
+                return savedSeedIdentityStorage.Identifier;
             }
 
-            void SetAsPrimarydentityHandler()
+            void SetAsPrimaryHandler()
             {
-                string path = @"c:\idbox"; // TODO: Get from State json
-                IdBoxStorage idBoxStorage = new(path);
+                State state = new State().Load();
+                IdBoxStorage idBoxStorage = new(state.Path);
 
-                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == "did:eth:0x154886Be866F59C4D9065569877c3a04B2940FC5");
+                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == state.SelectedIdentity);
 
-                if (identity != null)
+                if (identity is not null)
+                {
                     identity.IsPrimary = true;
+                    IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(identity);
 
-                IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(identity);
+                    Console.WriteLine($"SeedIdentity with Identifier{identity.Identifier} is set as a Primarydentity!");
+                }
+
             }
 
             // Opens an identity box
             void OpenHandler(string path)
             {
+                Console.WriteLine(path);
                 IdBoxStorage idBoxStorage = new(path);
                 List<IdentityStorage>? identities = idBoxStorage.Identities.ToList();
-                Console.WriteLine($"IdBox opened from location {Path.Combine(Path.GetTempPath(), path)}");
+                Console.WriteLine($"IdBox opened from location {path}");
 
                 idBoxStorage.DisplayIdenetities();
 
-                // TODO: Save it to State json
+                State state = new() { SelectedIdentity = "", Path = path };
+                state.Save();
             }
 
             // Lists identities
             void ListHandler(bool detail, bool summary)
             {
-                string path = @"c:\idbox"; // TODO: Gets from State json
+                Console.WriteLine("List!");
+                string path = new State().Load().Path;
                 IdBoxStorage idBoxStorage = new(path);
 
                 idBoxStorage.DisplayIdenetities(detail, summary);
             }
 
             // Accesses primary identity
-            void GetPrimary()
+            void GetPrimaryHandler()
             {
-                string path = @"c:\idbox"; // TODO: Gets from State json
+                string path = new State().Load().Path;
                 IdBoxStorage idBoxStorage = new(path);
 
                 Console.WriteLine($"Primary Identity: {idBoxStorage.PrimaryIdentity}");
@@ -147,8 +185,8 @@ namespace OfflineClient
 
             void SelectHandler(string identifier)
             {
-                string path = @"c:\idbox"; // TODO: Gets from State json
-                IdBoxStorage idBoxStorage = new(path);
+                State state = new State().Load();
+                IdBoxStorage idBoxStorage = new(state.Path);
 
                 IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == identifier);
 
@@ -157,17 +195,21 @@ namespace OfflineClient
                     Console.WriteLine("Not found!");
                 }
                 else
-                    Console.WriteLine($"Identity selected with identifier: {identity.Identifier}");
+                {
 
-                // TODO: Save it to State json
+                    state.SelectedIdentity = identifier;
+                    state.Save();
+
+                    Console.WriteLine($"Identity selected with identifier: {identity.Identifier}");
+                }
+
             }
 
-            void GetHandler(bool detail, bool summary)
+            void GetSelectedIdentityHandler(bool detail, bool summary)
             {
-                // TODO: Gets from State json
-                string path = @"c:\idbox";
-                IdBoxStorage idBoxStorage = new(path);
-                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == "did:eth:0x154886Be866F59C4D9065569877c3a04B2940FC5");
+                State state = new State().Load();
+                IdBoxStorage idBoxStorage = new(state.Path);
+                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == state.SelectedIdentity);
 
                 if (identity == null)
                 {
@@ -201,12 +243,15 @@ namespace OfflineClient
             void SetInfoHandler(string key, string value)
             {
                 if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(value))
+                {
                     Console.WriteLine("Enter a key and value option (for example: idbox id info set --key k1--value v1)!");
+                }
 
-                string path = @"c:\idbox"; // TODO: Gets from State json
-                IdBoxStorage idBoxStorage = new(path);
+                State state = new State().Load();
 
-                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == "did:eth:0x154886Be866F59C4D9065569877c3a04B2940FC5");
+                IdBoxStorage idBoxStorage = new(state.Path);
+
+                IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == state.SelectedIdentity);
 
                 if (identity == null)
                 {
@@ -222,7 +267,9 @@ namespace OfflineClient
                         identity.Info = info.ToArray();
                     }
                     else
+                    {
                         existedInfo.Value = value;
+                    }
 
                     IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(identity);
 
@@ -230,5 +277,6 @@ namespace OfflineClient
                 }
             }
         }
+
     }
 }

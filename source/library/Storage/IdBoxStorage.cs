@@ -57,7 +57,7 @@ namespace UniversalIdentity.Library.Storage
 
         //public Dictionary<string, IdentityStorage> Identities = new Dictionary<string, IdentityStorage>(StringComparer.OrdinalIgnoreCase);
         public IEnumerable<IdentityStorage> Identities { get; set; }
-        public string? PrimaryIdentity { get => Identities.FirstOrDefault(x => x.IsPrimary).Identifier; set => primaryIdentity = value; }
+        public string? PrimaryIdentity { get => Identities.FirstOrDefault(x => x.IsPrimary)?.Identifier; set => primaryIdentity = value; }
 
         public IdentityStorage SaveIdentity(IdentityStorage identityStorage)
         {
@@ -73,15 +73,17 @@ namespace UniversalIdentity.Library.Storage
         public IEnumerable<IdentityStorage> LoadIdentities()
         {
             IEnumerable<string> files = Repository.GetFiles("identities");
-
-            foreach (var file in files)
+            if (files is not null)
             {
-                var fileContents = this.Repository.GetFileContents("identities", $"{file}");
-                var result = new IdentityStorage();
-                var updatedIdentityJson = JObject.Parse(fileContents);
-                result.FromJson(updatedIdentityJson);
+                foreach (var file in files)
+                {
+                    var fileContents = this.Repository.GetFileContents("identities", $"{file}");
+                    var result = new IdentityStorage();
+                    var updatedIdentityJson = JObject.Parse(fileContents);
+                    result.FromJson(updatedIdentityJson);
 
-                yield return result;
+                    yield return result;
+                }
             }
         }
         public IdentityStorage GetIdentity(string identifier)

@@ -13,7 +13,7 @@ namespace OflineClient.Test
         [Fact]
         public void CLIclientScenariosTest()
         {
-            string path = @"c:\idbox";
+            string path = Path.GetTempPath();
             Program.CreateHandler(path);
             Program.OpenHandler(path); // idbox box open c:\idbox 
             Program.ListHandler(detail:true, summary: false); // idbox ids list --detail true
@@ -33,7 +33,7 @@ namespace OflineClient.Test
         /// </summary>
         public void CreateNewIdboxTest()
         {
-            string path = @"c:\idbox";
+            string path = Path.GetTempPath();
             Program.CreateHandler(path); // idbox box create c:\idbox
             Directory.Exists(path).Should().BeTrue();
         }
@@ -44,7 +44,7 @@ namespace OflineClient.Test
         /// </summary>
         public void OpenIdboxTest()
         {
-            string path = @"c:\idbox";
+            string path = Path.GetTempPath();
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string fileName = @".\State.Json";
             File.Exists(fileName).Should().BeTrue();
@@ -62,7 +62,7 @@ namespace OflineClient.Test
         /// </summary>
         public void ListsIdentitiesTest()
         {
-            string path = @"c:\idbox";
+            string path = Path.GetTempPath();
             Program.CreateHandler(path); // idbox box create c:\idbox
             Program.OpenHandler(path); // idbox box open c:\idbox 
             Program.ListHandler(detail: true, summary: false); // idbox ids list --detail true
@@ -75,7 +75,7 @@ namespace OflineClient.Test
         /// </summary>
         public void CreateAndSelectIdentityTest()
         {
-            string path = @"c:\idbox";
+            string path = Path.GetTempPath();
             Program.CreateHandler(path); // idbox box create c:\idbox
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
@@ -97,7 +97,7 @@ namespace OflineClient.Test
         /// </summary>
         public void SetAsPrimaryIdentityTest()
         {
-            string path = @"c:\idbox";
+            string path = Path.GetTempPath();
             Program.CreateHandler(path);
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
@@ -112,7 +112,7 @@ namespace OflineClient.Test
         /// </summary>
         public void GetPrimaryIdentityTest()
         {
-            string path = @"c:\idbox";
+            string path = Path.GetTempPath();
             Program.CreateHandler(path);
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
@@ -128,7 +128,7 @@ namespace OflineClient.Test
         /// </summary>
         public void SetInfoTest()
         {
-            string path = @"c:\idbox";
+            string path = Path.GetTempPath();
             Program.CreateHandler(path);
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed

@@ -143,8 +143,8 @@ namespace OfflineClient
 
             if (identity is not null)
             {
-                identity.IsPrimary = true;
-                IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(identity);
+                idBoxStorage.PrimaryIdentity=identity.Identifier;
+               idBoxStorage.Save();
 
                 Console.WriteLine($"SeedIdentity with Identifier{identity.Identifier} is set as a Primarydentity!");
             }
@@ -179,6 +179,7 @@ namespace OfflineClient
         {
             string path = new State().Load().Path;
             IdBoxStorage idBoxStorage = new(path);
+            idBoxStorage.Get();
 
             Console.WriteLine($"Primary Identity: {idBoxStorage.PrimaryIdentity}");
         }

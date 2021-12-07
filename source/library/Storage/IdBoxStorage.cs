@@ -26,6 +26,7 @@ namespace UniversalIdentity.Library.Storage
         {
             if (this.Repository == null) throw new Exception("Expected repository to be valid before initializing storage.");
             this.Repository.Init();
+            Save();
         }
 
         public IdentityStorage CreateSeedIdentity()
@@ -57,7 +58,7 @@ namespace UniversalIdentity.Library.Storage
 
         //public Dictionary<string, IdentityStorage> Identities = new Dictionary<string, IdentityStorage>(StringComparer.OrdinalIgnoreCase);
         public IEnumerable<IdentityStorage> Identities { get; set; }
-        public string? PrimaryIdentity { get => Identities.FirstOrDefault(x => x.IsPrimary)?.Identifier; set => primaryIdentity = value; }
+        public string? PrimaryIdentity { get; set ; }
 
         public IdentityStorage SaveIdentity(IdentityStorage identityStorage)
         {
@@ -109,6 +110,21 @@ namespace UniversalIdentity.Library.Storage
                 ["primaryIdentity"] = PrimaryIdentity,
                 ["identities"] = JsonConvert.SerializeObject(Identities)
             };
+        }
+        public void Save()
+        {
+            string fileName = $"f{Path.Replace(System.IO.Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(":", "")}";
+            Repository.UpdateOneFile("idbox", $"f{fileName}", ToJson().ToString());
+        }
+
+        public IdBoxStorage Get()
+        {
+            string fileName = $"f{Path.Replace(System.IO.Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(":", "")}";
+            var fileContents = Repository.GetFileContents($"idbox", $"f{fileName}");
+            var updatedIdentityJson = JObject.Parse(fileContents);
+            FromJson(updatedIdentityJson);
+
+            return this;
         }
     }
 }

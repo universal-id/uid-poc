@@ -9,7 +9,6 @@ namespace UniversalIdentity.Library.Storage
         public ValueLevel Level { get;  set; }
         public KeyStorage[] Keys { get;  set; }
         public Info[] Info { get;  set; }
-        public bool IsPrimary { get; set; }
 
         public void FromJson(JObject documentJson)
         {
@@ -18,7 +17,6 @@ namespace UniversalIdentity.Library.Storage
             var infos = (JArray)documentJson["info"];
             var identityKeysList = new List<KeyStorage>();
             Level = (ValueLevel)(int)documentJson["level"];
-            IsPrimary = (bool)documentJson["isPrimary"];
             foreach (var key in keys)
             {
                 var identityKey = new KeyStorage();
@@ -47,7 +45,6 @@ namespace UniversalIdentity.Library.Storage
             var keys = new JArray();
             identityJson["keys"] = keys;
             identityJson["level"] = (int)Level;
-            identityJson["isPrimary"] = IsPrimary;
             foreach (var identityKey in this.Keys)
             {
                 var key = new JObject();

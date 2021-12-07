@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfflineClient", "offline-cl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "..\library\Library.csproj", "{A4F64564-FC78-4C60-AEFF-12A74E680662}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OflineClient.Test", "..\offline-poc-test\OflineClient.Test\OflineClient.Test.csproj", "{DC3D8E03-0731-4AB5-B27A-CECBF41DBBAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OflineClient.Test", "OflineClient.Test\OflineClient.Test.csproj", "{A986E7D3-9877-43D3-A4F5-FEE0414D8669}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{A4F64564-FC78-4C60-AEFF-12A74E680662}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4F64564-FC78-4C60-AEFF-12A74E680662}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4F64564-FC78-4C60-AEFF-12A74E680662}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC3D8E03-0731-4AB5-B27A-CECBF41DBBAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC3D8E03-0731-4AB5-B27A-CECBF41DBBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC3D8E03-0731-4AB5-B27A-CECBF41DBBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC3D8E03-0731-4AB5-B27A-CECBF41DBBAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A986E7D3-9877-43D3-A4F5-FEE0414D8669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A986E7D3-9877-43D3-A4F5-FEE0414D8669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A986E7D3-9877-43D3-A4F5-FEE0414D8669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A986E7D3-9877-43D3-A4F5-FEE0414D8669}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

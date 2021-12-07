@@ -156,7 +156,6 @@ namespace OfflineClient
         {
             Console.WriteLine(path);
             IdBoxStorage idBoxStorage = new(path);
-            List<IdentityStorage>? identities = idBoxStorage.Identities.ToList();
             Console.WriteLine($"IdBox opened from location {path}");
 
             idBoxStorage.DisplayIdenetities();

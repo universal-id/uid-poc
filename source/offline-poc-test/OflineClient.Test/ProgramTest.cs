@@ -1,4 +1,9 @@
+using FluentAssertions;
 using OfflineClient;
+using OfflineClient.Models;
+using System;
+using System.IO;
+using System.Text.Json;
 using Xunit;
 
 namespace OflineClient.Test
@@ -8,8 +13,9 @@ namespace OflineClient.Test
         [Fact]
         public void CLIclientScenariosTest()
         {
-            Program.CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
-            Program.OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            string path = @"c:\idbox";
+            Program.CreateHandler(path);
+            Program.OpenHandler(path); // idbox box open c:\idbox 
             Program.ListHandler(detail:true, summary: false); // idbox ids list --detail true
             Program.ListHandler(detail:false, summary:true); //  idbox ids list --summary true
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
@@ -27,7 +33,9 @@ namespace OflineClient.Test
         /// </summary>
         public void CreateNewIdboxTest()
         {
-            Program.CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
+            string path = @"c:\idbox";
+            Program.CreateHandler(path); // idbox box create c:\idbox
+            Directory.Exists(path).Should().BeTrue();
         }
 
         [Fact]
@@ -36,7 +44,16 @@ namespace OflineClient.Test
         /// </summary>
         public void OpenIdboxTest()
         {
-            Program.OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            string path = @"c:\idbox";
+            Program.OpenHandler(path); // idbox box open c:\idbox 
+            string fileName = @".\State.Json";
+            File.Exists(fileName).Should().BeTrue();
+
+            string jsonString = File.ReadAllText(fileName);
+            jsonString.Should().NotBeNull();
+
+            State result = JsonSerializer.Deserialize<State>(jsonString) ?? new State();
+            result.Path.Should().Be(path);
         }
 
         [Fact]
@@ -45,8 +62,9 @@ namespace OflineClient.Test
         /// </summary>
         public void ListsIdentitiesTest()
         {
-            Program.CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
-            Program.OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            string path = @"c:\idbox";
+            Program.CreateHandler(path); // idbox box create c:\idbox
+            Program.OpenHandler(path); // idbox box open c:\idbox 
             Program.ListHandler(detail: true, summary: false); // idbox ids list --detail true
             Program.ListHandler(detail: false, summary: true); //  idbox ids list --summary true
         }
@@ -57,11 +75,20 @@ namespace OflineClient.Test
         /// </summary>
         public void CreateAndSelectIdentityTest()
         {
-            Program.CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
-            Program.OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            string path = @"c:\idbox";
+            Program.CreateHandler(path); // idbox box create c:\idbox
+            Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler(true, false); // idbox ids list --detail true
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+
+            string fileName = @".\State.Json";
+            string jsonString = File.ReadAllText(fileName);
+            jsonString.Should().NotBeNull();
+
+            State result = JsonSerializer.Deserialize<State>(jsonString) ?? new State();
+            result.Path.Should().Be(path);
+            result.SelectedIdentity.Should().Be(identifier);
         }
 
         [Fact]
@@ -70,8 +97,9 @@ namespace OflineClient.Test
         /// </summary>
         public void SetAsPrimaryIdentityTest()
         {
-            Program.CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
-            Program.OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            string path = @"c:\idbox";
+            Program.CreateHandler(path);
+            Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler(true, false); // idbox ids list --detail true
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
@@ -84,8 +112,9 @@ namespace OflineClient.Test
         /// </summary>
         public void GetPrimaryIdentityTest()
         {
-            Program.CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
-            Program.OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            string path = @"c:\idbox";
+            Program.CreateHandler(path);
+            Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler(true, false); // idbox ids list --detail true
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
@@ -99,8 +128,9 @@ namespace OflineClient.Test
         /// </summary>
         public void SetInfoTest()
         {
-            Program.CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
-            Program.OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            string path = @"c:\idbox";
+            Program.CreateHandler(path);
+            Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler(true, false); // idbox ids list --detail true
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6

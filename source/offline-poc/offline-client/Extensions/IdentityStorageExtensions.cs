@@ -4,13 +4,13 @@ namespace OfflineClient.Extensions
 {
     public static class IdentityStorageExtensions
     {
-        public static void DisplayIdenetities(this IdBoxStorage idBoxStorage, bool detail = false, bool summary = true)
+        public static void DisplayIdenetities(this IdBoxStorage idBoxStorage, string summary= "--summary")
         {
             List<IdentityStorage>? identities = idBoxStorage.Identities.ToList();
 
             Console.WriteLine($"{identities.Count} identities, Primary identity:{idBoxStorage.PrimaryIdentity}");
 
-            if (summary)
+            if (summary== "--summary")
             {
                 int i = 0;
                 foreach (IdentityStorage? identity in identities)

@@ -1,7 +1,6 @@
 using FluentAssertions;
 using OfflineClient;
 using OfflineClient.Models;
-using System;
 using System.IO;
 using System.Text.Json;
 using Xunit;
@@ -16,14 +15,14 @@ namespace OflineClient.Test
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
             Program.OpenHandler(path); // idbox box open c:\idbox 
-            Program.ListHandler(detail:true, summary: false); // idbox ids list --detail true
-            Program.ListHandler(detail:false, summary:true); //  idbox ids list --summary true
+            Program.ListHandler("--detail"); // idbox ids list --detail
+            Program.ListHandler("--summary"); //  idbox ids list --summary
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler(true, false); // idbox ids list --detail true
+            Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
             Program.SetAsPrimaryHandler(); // idbox ids setPrimary
             Program.GetPrimaryHandler(); // idbox ids getprimary
-            Program.GetSelectedIdentityHandler(true, false); // idbox id get --summary
+            Program.GetSelectedIdentityHandler("--summary"); // idbox id get --summary
             Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
         }
 
@@ -65,8 +64,8 @@ namespace OflineClient.Test
             string path = Path.GetTempPath();
             Program.CreateHandler(path); // idbox box create c:\idbox
             Program.OpenHandler(path); // idbox box open c:\idbox 
-            Program.ListHandler(detail: true, summary: false); // idbox ids list --detail true
-            Program.ListHandler(detail: false, summary: true); //  idbox ids list --summary true
+            Program.ListHandler("--detail"); // idbox ids list --detail
+            Program.ListHandler("--summary"); //  idbox ids list --summary true
         }
 
         [Fact]
@@ -79,7 +78,7 @@ namespace OflineClient.Test
             Program.CreateHandler(path); // idbox box create c:\idbox
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler(true, false); // idbox ids list --detail true
+            Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
 
             string fileName = @".\State.Json";
@@ -101,7 +100,7 @@ namespace OflineClient.Test
             Program.CreateHandler(path);
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler(true, false); // idbox ids list --detail true
+            Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
             Program.SetAsPrimaryHandler(); // idbox ids setPrimary
         }
@@ -116,7 +115,7 @@ namespace OflineClient.Test
             Program.CreateHandler(path);
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler(true, false); // idbox ids list --detail true
+            Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
             Program.SetAsPrimaryHandler(); // idbox ids setPrimary
             Program.GetPrimaryHandler(); // idbox ids getprimary
@@ -132,7 +131,7 @@ namespace OflineClient.Test
             Program.CreateHandler(path);
             Program.OpenHandler(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler(true, false); // idbox ids list --detail true
+            Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
             Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
         }

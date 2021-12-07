@@ -51,10 +51,9 @@ namespace OfflineClient
             open.AddArgument(argument);
             open.Handler = CommandHandler.Create<string>(OpenHandler);
 
-            Option<bool> summaryOption = new("--summary", () => false);
-            Option<bool> detailOption = new("--detail", () => true);
-            list.AddOption(summaryOption);
-            list.AddOption(detailOption);
+            Argument summaryordetailArgument = new("summaryordetail");
+            summaryordetailArgument.SetDefaultValue("--summary");
+            list.AddArgument(summaryordetailArgument);
             list.Handler = CommandHandler.Create(ListHandler);
 
             createSeed.Handler = CommandHandler.Create(CreateSeedIdentityHandler);
@@ -67,38 +66,36 @@ namespace OfflineClient
             select.AddArgument(argument);
             select.Handler = CommandHandler.Create<string>(SelectHandler);
 
-            get.AddOption(summaryOption);
-            get.AddOption(detailOption);
+            get.AddArgument(selectArgument);
             get.Handler = CommandHandler.Create(GetSelectedIdentityHandler);
 
             Option<string> keyOption = new("--key", () => "");
             Option<string> valueOption = new("--value", () => "");
-            set.AddOption(summaryOption);
-            set.AddOption(detailOption);
+            set.AddArgument(summaryordetailArgument);
             set.Handler = CommandHandler.Create(SetInfoHandler);
 
 
-            //await idbox.InvokeAsync(args);
+            await idbox.InvokeAsync(args);
 
-            CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
-            Console.WriteLine("**********************0");
-            OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
-            Console.WriteLine("**********************1");
-            ListHandler(true, false); // idbox ids list [--summary true] or idbox ids list [--summary false]
-            Console.WriteLine("**********************2");
-            string identifier = CreateSeedIdentity(); // idbox ids createSeed
-            Console.WriteLine("**********************3");
-            ListHandler(true, false); // idbox ids list [--summary true] or idbox ids list [--summary false]
-            Console.WriteLine("**********************4");
-            SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
-            Console.WriteLine("**********************5");
-            SetAsPrimaryHandler(); // idbox ids setPrimary
-            Console.WriteLine("**********************6");
-            GetPrimaryHandler(); // idbox ids getprimary
-            Console.WriteLine("**********************7");
-            GetSelectedIdentityHandler(true, false); // idbox id get --summary
-            Console.WriteLine("**********************8");
-            SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
+            //CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
+            //Console.WriteLine("**********************0");
+            //OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            //Console.WriteLine("**********************1");
+            //ListHandler("--detail"); // idbox ids list --detail
+            //Console.WriteLine("**********************2");
+            //string identifier = CreateSeedIdentity(); // idbox ids createSeed
+            //Console.WriteLine("**********************3");
+            //ListHandler("--summary"); // idbox ids list --detail
+            //Console.WriteLine("**********************4");
+            //SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+            //Console.WriteLine("**********************5");
+            //SetAsPrimaryHandler(); // idbox ids setPrimary
+            //Console.WriteLine("**********************6");
+            //GetPrimaryHandler(); // idbox ids getprimary
+            //Console.WriteLine("**********************7");
+            //GetSelectedIdentityHandler("--summary"); // idbox id get --summary
+            //Console.WriteLine("**********************8");
+            //SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
 
         }
         // Creates a new identity box
@@ -165,13 +162,13 @@ namespace OfflineClient
         }
 
         // Lists identities
-        public static void ListHandler(bool detail, bool summary)
+        public static void ListHandler(string summaryordetail)
         {
             Console.WriteLine("List!");
             string path = new State().Load().Path;
             IdBoxStorage idBoxStorage = new(path);
 
-            idBoxStorage.DisplayIdenetities(detail, summary);
+            idBoxStorage.DisplayIdenetities(summaryordetail);
         }
 
         // Accesses primary identity
@@ -206,7 +203,7 @@ namespace OfflineClient
 
         }
 
-        public static void GetSelectedIdentityHandler(bool detail, bool summary)
+        public static void GetSelectedIdentityHandler(string summaryordetail)
         {
             State state = new State().Load();
             IdBoxStorage idBoxStorage = new(state.Path);
@@ -218,7 +215,7 @@ namespace OfflineClient
             }
             else
             {
-                if (summary)
+                if (summaryordetail== "--summary")
                 {
                     Console.WriteLine($"Identifier: {identity.Identifier}");
                 }

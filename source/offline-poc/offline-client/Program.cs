@@ -1,4 +1,5 @@
-﻿using OfflineClient.Extensions;
+﻿using Microsoft.VisualBasic;
+using OfflineClient.Extensions;
 using OfflineClient.Models;
 using System.CommandLine;
 using System.CommandLine.Invocation;
@@ -14,6 +15,34 @@ namespace OfflineClient
     public class Program
     {
         static async Task Main(string[] args)
+        {
+            RootCommand idbox = InitialIdbox();
+
+            await idbox.InvokeAsync(args);
+
+            //CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
+            //Console.WriteLine("**********************0");
+            //OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
+            //Console.WriteLine("**********************1");
+            //ListHandler("--detail"); // idbox ids list --detail
+            //Console.WriteLine("**********************2");
+            //string identifier = CreateSeedIdentity(); // idbox ids createSeed
+            //Console.WriteLine("**********************3");
+            //ListHandler("--summary"); // idbox ids list --detail
+            //Console.WriteLine("**********************4");
+            //SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+            //Console.WriteLine("**********************5");
+            //SetAsPrimaryHandler(); // idbox ids setPrimary
+            //Console.WriteLine("**********************6");
+            //GetPrimaryHandler(); // idbox ids getprimary
+            //Console.WriteLine("**********************7");
+            //GetSelectedIdentityHandler("--summary"); // idbox id get --summary
+            //Console.WriteLine("**********************8");
+            //SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
+
+        }
+
+        private static RootCommand InitialIdbox()
         {
             RootCommand idbox = new("idbox");
             Command box = new("box");
@@ -48,8 +77,11 @@ namespace OfflineClient
             create.AddArgument(argument);
             create.Handler = CommandHandler.Create<string>(CreateHandler);
 
+            Argument openArgument = new("interactive");
+            openArgument.SetDefaultValue("non-interactive");
             open.AddArgument(argument);
-            open.Handler = CommandHandler.Create<string>(OpenHandler);
+            open.AddArgument(openArgument);
+            open.Handler = CommandHandler.Create<string, string>(OpenHandlerAsync);
 
             Argument summaryordetailArgument = new("summaryordetail");
             summaryordetailArgument.SetDefaultValue("--summary");
@@ -74,30 +106,9 @@ namespace OfflineClient
             set.AddArgument(summaryordetailArgument);
             set.Handler = CommandHandler.Create(SetInfoHandler);
 
-
-            await idbox.InvokeAsync(args);
-
-            //CreateHandler(@"c:\idbox"); // idbox box create c:\idbox
-            //Console.WriteLine("**********************0");
-            //OpenHandler(@"c:\idbox"); // idbox box open c:\idbox 
-            //Console.WriteLine("**********************1");
-            //ListHandler("--detail"); // idbox ids list --detail
-            //Console.WriteLine("**********************2");
-            //string identifier = CreateSeedIdentity(); // idbox ids createSeed
-            //Console.WriteLine("**********************3");
-            //ListHandler("--summary"); // idbox ids list --detail
-            //Console.WriteLine("**********************4");
-            //SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
-            //Console.WriteLine("**********************5");
-            //SetAsPrimaryHandler(); // idbox ids setPrimary
-            //Console.WriteLine("**********************6");
-            //GetPrimaryHandler(); // idbox ids getprimary
-            //Console.WriteLine("**********************7");
-            //GetSelectedIdentityHandler("--summary"); // idbox id get --summary
-            //Console.WriteLine("**********************8");
-            //SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
-
+            return idbox;
         }
+
         // Creates a new identity box
         public static void CreateHandler(string path)
         {
@@ -140,8 +151,8 @@ namespace OfflineClient
 
             if (identity is not null)
             {
-                idBoxStorage.PrimaryIdentity=identity.Identifier;
-               idBoxStorage.Save();
+                idBoxStorage.PrimaryIdentity = identity.Identifier;
+                idBoxStorage.Save();
 
                 Console.WriteLine($"SeedIdentity with Identifier{identity.Identifier} is set as a Primarydentity!");
             }
@@ -149,7 +160,7 @@ namespace OfflineClient
         }
 
         // Opens an identity box
-        public static void OpenHandler(string path)
+        public static async Task OpenHandlerAsync(string path, string interactive= "non-interactive")
         {
             Console.WriteLine(path);
             IdBoxStorage idBoxStorage = new(path);
@@ -159,12 +170,32 @@ namespace OfflineClient
 
             State state = new() { SelectedIdentity = "", Path = path };
             state.Save();
+
+            if (interactive == "--interactive")
+            {
+                while (true)
+                {
+                    string? args = "";
+                    while (string.IsNullOrWhiteSpace(args))
+                    {
+                        Console.Write(">>");
+                        args = Console.ReadLine();
+                    }
+
+                    RootCommand idbox = InitialIdbox();
+
+                    if (args == "exit")
+                        break;
+
+                    await idbox.InvokeAsync(args);
+                }
+
+            }
         }
 
         // Lists identities
         public static void ListHandler(string summaryordetail)
         {
-            Console.WriteLine("List!");
             string path = new State().Load().Path;
             IdBoxStorage idBoxStorage = new(path);
 
@@ -215,7 +246,7 @@ namespace OfflineClient
             }
             else
             {
-                if (summaryordetail== "--summary")
+                if (summaryordetail == "--summary")
                 {
                     Console.WriteLine($"Identifier: {identity.Identifier}");
                 }

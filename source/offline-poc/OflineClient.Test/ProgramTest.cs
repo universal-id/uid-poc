@@ -14,7 +14,7 @@ namespace OflineClient.Test
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
-            Program.OpenHandler(path); // idbox box open c:\idbox 
+            Program.OpenHandlerAsync(path).GetAwaiter().GetResult(); // idbox box open c:\idbox 
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.ListHandler("--summary"); //  idbox ids list --summary
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
@@ -44,7 +44,7 @@ namespace OflineClient.Test
         public void OpenIdboxTest()
         {
             string path = Path.GetTempPath();
-            Program.OpenHandler(path); // idbox box open c:\idbox 
+            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string fileName = @".\State.Json";
             File.Exists(fileName).Should().BeTrue();
 
@@ -63,7 +63,7 @@ namespace OflineClient.Test
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path); // idbox box create c:\idbox
-            Program.OpenHandler(path); // idbox box open c:\idbox 
+            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.ListHandler("--summary"); //  idbox ids list --summary true
         }
@@ -76,7 +76,7 @@ namespace OflineClient.Test
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path); // idbox box create c:\idbox
-            Program.OpenHandler(path); // idbox box open c:\idbox 
+            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
@@ -98,7 +98,7 @@ namespace OflineClient.Test
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
-            Program.OpenHandler(path); // idbox box open c:\idbox 
+            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
@@ -113,7 +113,7 @@ namespace OflineClient.Test
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
-            Program.OpenHandler(path); // idbox box open c:\idbox 
+            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
@@ -129,7 +129,7 @@ namespace OflineClient.Test
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
-            Program.OpenHandler(path); // idbox box open c:\idbox 
+            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6

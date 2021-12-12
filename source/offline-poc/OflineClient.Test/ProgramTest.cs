@@ -3,6 +3,7 @@ using OfflineClient;
 using OfflineClient.Models;
 using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OflineClient.Test
@@ -10,11 +11,11 @@ namespace OflineClient.Test
     public class ProgramTest
     {
         [Fact]
-        public void CLIclientScenariosTest()
+        public async Task CLIclientScenariosTest()
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
-            Program.OpenHandlerAsync(path).GetAwaiter().GetResult(); // idbox box open c:\idbox 
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.ListHandler("--summary"); //  idbox ids list --summary
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
@@ -41,10 +42,10 @@ namespace OflineClient.Test
         /// <summary>
         /// Early adopter opens an identity box
         /// </summary>
-        public void OpenIdboxTest()
+        public async void OpenIdboxTest()
         {
             string path = Path.GetTempPath();
-            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string fileName = @".\State.Json";
             File.Exists(fileName).Should().BeTrue();
 
@@ -59,11 +60,11 @@ namespace OflineClient.Test
         /// <summary>
         /// Early adopter lists identities
         /// </summary>
-        public void ListsIdentitiesTest()
+        public async Task ListsIdentitiesTest()
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path); // idbox box create c:\idbox
-            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.ListHandler("--summary"); //  idbox ids list --summary true
         }
@@ -72,11 +73,11 @@ namespace OflineClient.Test
         /// <summary>
         /// Early adopter create and select Identity
         /// </summary>
-        public void CreateAndSelectIdentityTest()
+        public async Task CreateAndSelectIdentityTest()
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path); // idbox box create c:\idbox
-            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
@@ -94,11 +95,11 @@ namespace OflineClient.Test
         /// <summary>
         /// Early adopter select and SetAsPrimary Identity
         /// </summary>
-        public void SetAsPrimaryIdentityTest()
+        public async Task SetAsPrimaryIdentityTest()
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
-            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
@@ -109,11 +110,11 @@ namespace OflineClient.Test
         /// <summary>
         /// Early adopter accesses primary identity
         /// </summary>
-        public void GetPrimaryIdentityTest()
+        public async Task GetPrimaryIdentityTest()
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
-            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
@@ -125,11 +126,11 @@ namespace OflineClient.Test
         /// <summary>
         /// Early adopter accesses primary identity
         /// </summary>
-        public void SetInfoTest()
+        public async Task SetInfoTest()
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
-            Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6

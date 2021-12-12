@@ -91,8 +91,11 @@ namespace OfflineClient
             createSeed.Handler = CommandHandler.Create(CreateSeedIdentityHandler);
 
             getPrimary.Handler = CommandHandler.Create(GetPrimaryHandler);
+            getPrimary.AddAlias("get-primary");
 
             setPrimary.Handler = CommandHandler.Create(SetAsPrimaryHandler);
+            setPrimary.AddAlias("set-primary");
+
 
             Argument selectArgument = new("identifier");
             select.AddArgument(argument);

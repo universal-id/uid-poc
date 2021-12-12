@@ -79,12 +79,14 @@ namespace OfflineClient
 
             Argument openArgument = new("interactive");
             openArgument.SetDefaultValue("non-interactive");
+            openArgument.AddSuggestions("interactive", "non-interactive");
             open.AddArgument(argument);
             open.AddArgument(openArgument);
             open.Handler = CommandHandler.Create<string, string>(OpenHandlerAsync);
 
             Argument summaryordetailArgument = new("summaryordetail");
             summaryordetailArgument.SetDefaultValue("--summary");
+            summaryordetailArgument.AddSuggestions("summary", "detail");
             list.AddArgument(summaryordetailArgument);
             list.Handler = CommandHandler.Create(ListHandler);
 

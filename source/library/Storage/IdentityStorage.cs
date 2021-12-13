@@ -16,9 +16,7 @@ namespace UniversalIdentity.Library.Storage
             var identityKeysList = new List<KeyStorage>();
             foreach(var key in keys)
             {
-                var identityKey = new KeyStorage();
-                identityKey.Identifier = (string)key["identifier"];
-                identityKey.PublicKey = (string)key["publicKey"];
+                var identityKey = new KeyStorage((string)key["identifier"], (string)key["publicKey"]);
                 identityKey.Level = (ValueLevel)(int)key["level"];
                 identityKeysList.Add(identityKey);
             }

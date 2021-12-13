@@ -1,4 +1,10 @@
-bin/
-obj/
-.DS_Store
+﻿# Build results
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache/options directory
+.vs/
+
+# Visual Studio code and .DS_Store
 .vscode/
+.DS_Store

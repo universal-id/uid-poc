@@ -116,7 +116,44 @@ namespace UniversalIdentity.Library.Storage
                 return null;
             }
         }
+        public IEnumerable<string> GetFiles(string folderPath)
+        {
+            var repositoryBoxLatestPath = IO.Path.Combine(this.Path, FileRepositoryHelper.BoxFolder, FileRepositoryHelper.Latest);
+            var folderHash = File.ReadAllText(repositoryBoxLatestPath);
+            FolderInfo folderInfo = FileRepositoryHelper.GetFolderInfo(this, folderHash);
+            var segments = FileRepositoryHelper.GetSegments(folderPath);
+            FolderEntry folderEntry = null;
 
+            if (segments != null)
+            {
+                foreach (var segment in segments)
+                {
+                    if (folderInfo.Entries.TryGetValue(segment, out folderEntry))
+                    {
+                        // throw new Exception($"Expected folder '{folderInfo.Hash}' under path '{filePath}' to contain path segment '{segment}'");
+                        folderHash = folderEntry.Hash;
+                        folderInfo = FileRepositoryHelper.GetFolderInfo(this, folderHash);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+
+                return folderInfo.Entries.Values.Where(x => x.Type == ObjectType.File).Select(x => x.Name);
+            //if (folderInfo.Entries.TryGetValue(folderPath, out folderEntry))
+            //{
+            //    var fileHash = folderEntry.Hash;
+            //    if (string.IsNullOrEmpty(fileHash)) throw new Exception();
+            //    folderInfo = FileRepositoryHelper.GetFolderInfo(this, folderHash);
+            //    return folderInfo.Entries.Values.Where(x => x.Type == ObjectType.File).Select(x => x.Name);
+            //}
+            //else
+            //{
+            //    return null;
+            //}
+        }
         public void DeleteOneFile(string basePath, string fileName)
         {
             var changes = new [] { new SimpleChange() 

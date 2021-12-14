@@ -4,7 +4,7 @@ namespace OfflineClient.Extensions
 {
     public static class IdentityStorageExtensions
     {
-        public static void DisplayIdenetities(this IdBoxStorage idBoxStorage, string summary= "--summary")
+        public static void DisplayIdentities(this IdBoxStorage idBoxStorage, string summary= "--summary")
         {
             List<IdentityStorage>? identities = idBoxStorage.Identities.ToList();
 

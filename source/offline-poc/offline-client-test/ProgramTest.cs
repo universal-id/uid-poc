@@ -5,13 +5,15 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
+using FluentAssertions;
+using UniversalIdentity.Library.Storage;
 
 namespace OfflineClient.Test
 {
     public class ProgramTest
     {
         [Fact]
-        public async Task CLIclientScenariosTest()
+        public async Task CliClientScenariosTest()
         {
             string path = Path.GetTempPath();
             Program.CreateHandler(path);
@@ -45,7 +47,7 @@ namespace OfflineClient.Test
         public async void OpenIdboxTest()
         {
             string path = Path.GetTempPath();
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox
             string fileName = @".\State.Json";
             File.Exists(fileName).Should().BeTrue();
 
@@ -135,6 +137,36 @@ namespace OfflineClient.Test
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
             Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
+        }
+
+        [Fact]
+        /// <summary>
+        /// Early adopter activates a beacon
+        /// </summary>
+        public async Task ActivateBeaconTest()
+        {
+            string path = Path.GetTempPath();
+            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox
+            Program.CreateSeedIdentityHandler(); // idbox ids create-seed
+            Program.SetAsPrimaryHandler(); // idbox ids set-primary
+
+            var identityStorage = new IdBoxStorage(path);
+            var identifier = identityStorage.PrimaryIdentity;
+            identifier.Should().NotBeNull();
+        
+            Program.ActivateBeaconHandler(path, identifier!); // idbox beacon activate
+
+            var idBoxService = State.IdBoxService;
+            idBoxService.Should().NotBeNull();
+            //var idBoxStorage = idBoxService.Storage;
+            var communicationService = idBoxService.Communication;
+            communicationService.Should().NotBeNull();
+            using (communicationService)
+            {
+                var beaconProtocol = communicationService.BeaconProtocol;
+                beaconProtocol.Should().NotBeNull();
+                beaconProtocol.LocalBeacon.Should().NotBeNull();
+            }
         }
     }
 }

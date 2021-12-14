@@ -17,6 +17,8 @@ namespace UniversalIdentity.Library.Storage
         {
             this.Path = path;
             this.Repository = new FileRepository(path);
+
+            LoadIdBox(this);
             Identities = LoadIdentities();
         }
 
@@ -67,6 +69,14 @@ namespace UniversalIdentity.Library.Storage
             var updatedIdentityJson = JObject.Parse(fileContents);
             updatedIdentityStorage.FromJson(updatedIdentityJson);
             return updatedIdentityStorage;
+        }
+
+        public void LoadIdBox(IdBoxStorage idBoxStorage)
+        {
+            string fileName = $"f{Path.Replace(System.IO.Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(":", "")}";
+            var idBoxJsonFileContents = Repository.GetFileContents("idbox", $"f{fileName}");
+            var idBoxJson = JObject.Parse(idBoxJsonFileContents);
+            idBoxStorage.FromJson(idBoxJson);
         }
 
         public IEnumerable<IdentityStorage> LoadIdentities()

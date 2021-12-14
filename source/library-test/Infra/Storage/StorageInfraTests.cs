@@ -8,6 +8,7 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Security.Principal;
+using UniversalIdentity.Library.Cryptography;
 
 namespace UniversalIdentity.Library.Test.Infra.Storage;
 
@@ -99,10 +100,12 @@ public class StorageInfraTests : TestsBase
             IdentityStorage? seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
             seedIdentityStorage.Should().NotBeNull();
 
+            var ethKey1 = new EthKey();
+            var ethKey2 = new EthKey();
             seedIdentityStorage.Level = ValueLevel.VeryHigh;
             var identityKeysList = new List<KeyStorage>() {
-                new KeyStorage(){Identifier = "Identifier1",Level= ValueLevel.High, Created=1,PublicKey=""},
-                new KeyStorage(){Identifier = "Identifier2",Level= ValueLevel.Low, Created=1,PublicKey=""},
+                new KeyStorage(ethKey1.GetIdentifier(), ethKey1.GetPublicKey()){Level= ValueLevel.High, Created=1},
+                new KeyStorage(ethKey2.GetIdentifier(), ethKey2.GetPublicKey()){Level= ValueLevel.Low, Created=1},
             };
             seedIdentityStorage.Keys = identityKeysList.ToArray();
 

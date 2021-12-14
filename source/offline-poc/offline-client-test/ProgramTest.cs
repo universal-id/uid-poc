@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace OflineClient.Test
+namespace OfflineClient.Test
 {
     public class ProgramTest
     {
@@ -20,7 +20,7 @@ namespace OflineClient.Test
             Program.ListHandler("--summary"); //  idbox ids list --summary
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3ï¿½d4e5f6
             Program.SetAsPrimaryHandler(); // idbox ids setPrimary
             Program.GetPrimaryHandler(); // idbox ids getprimary
             Program.GetSelectedIdentityHandler("--summary"); // idbox id get --summary
@@ -80,7 +80,7 @@ namespace OflineClient.Test
             await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3ï¿½d4e5f6
 
             string fileName = @".\State.Json";
             string jsonString = File.ReadAllText(fileName);
@@ -102,7 +102,7 @@ namespace OflineClient.Test
             await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3ï¿½d4e5f6
             Program.SetAsPrimaryHandler(); // idbox ids setPrimary
         }
 
@@ -117,7 +117,7 @@ namespace OflineClient.Test
             await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3ï¿½d4e5f6
             Program.SetAsPrimaryHandler(); // idbox ids setPrimary
             Program.GetPrimaryHandler(); // idbox ids getprimary
         }
@@ -133,7 +133,7 @@ namespace OflineClient.Test
             await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
             string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
+            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3ï¿½d4e5f6
             Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
         }
     }

@@ -39,9 +39,7 @@ namespace UniversalIdentity.Library.Storage
             {
                 Identifier = identifier,
                 Level = ValueLevel.MediumLow,
-                Keys = new[] { new KeyStorage() {
-                     Identifier = identifier,
-                     PublicKey = publicKey,
+                Keys = new[] { new KeyStorage(identifier, publicKey) {
                      Level = ValueLevel.MediumLow,
                      Created = Helper.ConvertToUnixTime(DateTime.UtcNow)
                 }},

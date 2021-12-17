@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfflineClient", "offline-cl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "..\library\Library.csproj", "{A4F64564-FC78-4C60-AEFF-12A74E680662}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OflineClient.Test", "OflineClient.Test\OflineClient.Test.csproj", "{A986E7D3-9877-43D3-A4F5-FEE0414D8669}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfflineClient.Test", "offline-client-test\OfflineClient.Test.csproj", "{A986E7D3-9877-43D3-A4F5-FEE0414D8669}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,6 +10,7 @@
     <PackageReference Include="Nethereum.Hex" Version="4.0.5" />
     <PackageReference Include="Nethereum.Signer" Version="4.0.5" />
     <PackageReference Include="Nethereum.Util" Version="4.0.5" />
+    <PackageReference Include="UniversalIdentity.Forks.PeerTalk" Version="0.42.0" />
   </ItemGroup>
 
 </Project>

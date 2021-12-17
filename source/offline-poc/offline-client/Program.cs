@@ -58,28 +58,33 @@ namespace OfflineClient
             Command info = new("info");
             Command set = new("set");
             Command createSeed = new("createSeed");
+            Command beacon = new("beacon");
+            Command activate = new("activate");
 
             idbox.Add(box);
             box.Add(create);
             box.Add(open);
             idbox.Add(ids);
-            idbox.Add(id);
             ids.Add(list);
             ids.Add(setPrimary);
             ids.Add(getPrimary);
             ids.Add(get);
-            id.Add(select);
             ids.Add(createSeed);
+            idbox.Add(id);
+            id.Add(select);
             id.Add(info);
+            idbox.Add(info);
             info.Add(set);
+            idbox.Add(beacon);
+            info.Add(activate);
 
-            Argument argument = new("path");
-            create.AddArgument(argument);
+            Argument pathArgument = new("path");
+            create.AddArgument(pathArgument);
             create.Handler = CommandHandler.Create<string>(CreateHandler);
 
             Argument openArgument = new("interactive");
             openArgument.SetDefaultValue("non-interactive");
-            open.AddArgument(argument);
+            open.AddArgument(pathArgument);
             open.AddArgument(openArgument);
             open.Handler = CommandHandler.Create<string, string>(OpenHandlerAsync);
 
@@ -98,7 +103,7 @@ namespace OfflineClient
 
 
             Argument selectArgument = new("identifier");
-            select.AddArgument(argument);
+            select.AddArgument(pathArgument);
             select.Handler = CommandHandler.Create<string>(SelectHandler);
 
             get.AddArgument(selectArgument);
@@ -108,6 +113,8 @@ namespace OfflineClient
             Option<string> valueOption = new("--value", () => "");
             set.AddArgument(summaryordetailArgument);
             set.Handler = CommandHandler.Create(SetInfoHandler);
+
+            activate.Handler = CommandHandler.Create(ActivateBeaconHandler);
 
             return idbox;
         }
@@ -134,13 +141,17 @@ namespace OfflineClient
 
         public static string CreateSeedIdentity()
         {
-            string path = new State().Load().Path;
+            var state = new State().Load();
+            string path = state.Path;
             IdBoxStorage idBoxStorage = new(path);
 
             IdentityStorage seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
             IdentityStorage savedSeedIdentityStorage = idBoxStorage.SaveIdentity(seedIdentityStorage);
 
-            Console.WriteLine($"SeedIdentity with Identifier{seedIdentityStorage.Identifier} is created!");
+            Console.WriteLine($"SeedIdentity with Identifier {seedIdentityStorage.Identifier} is created!");
+
+            state.SelectedIdentity = seedIdentityStorage.Identifier;
+            state.Save();
 
             return savedSeedIdentityStorage.Identifier;
         }
@@ -157,7 +168,7 @@ namespace OfflineClient
                 idBoxStorage.PrimaryIdentity = identity.Identifier;
                 idBoxStorage.Save();
 
-                Console.WriteLine($"SeedIdentity with Identifier{identity.Identifier} is set as a Primarydentity!");
+                Console.WriteLine($"SeedIdentity with Identifier {identity.Identifier} is set as a PrimaryIdentity!");
             }
 
         }
@@ -169,7 +180,7 @@ namespace OfflineClient
             IdBoxStorage idBoxStorage = new(path);
             Console.WriteLine($"IdBox opened from location {path}");
 
-            idBoxStorage.DisplayIdenetities();
+            idBoxStorage.DisplayIdentities();
 
             State state = new() { SelectedIdentity = "", Path = path };
             state.Save();
@@ -202,7 +213,7 @@ namespace OfflineClient
             string path = new State().Load().Path;
             IdBoxStorage idBoxStorage = new(path);
 
-            idBoxStorage.DisplayIdenetities(summaryordetail);
+            idBoxStorage.DisplayIdentities(summaryordetail);
         }
 
         // Accesses primary identity
@@ -287,7 +298,7 @@ namespace OfflineClient
 
             if (identity == null)
             {
-                Console.WriteLine("Not found!");
+                Console.WriteLine("Identifier not found!");
             }
             else
             {
@@ -309,5 +320,60 @@ namespace OfflineClient
             }
         }
 
+        //idbox beacon activate
+        public static void ActivateBeaconHandler(string path, string identifier)
+        {
+            State state = new State().Load();
+            State.StartCommunications();
+            var idBoxService = State.IdBoxService;
+            var idBoxStorage = idBoxService.Storage;
+            var beaconProtocol = idBoxService.Communication.BeaconProtocol;
+
+            identifier = identifier ?? state.SelectedIdentity;
+
+            IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == identifier);
+
+            if (identity == null)
+            {
+                Console.WriteLine("Identifier not found!");
+            }
+            else
+            {
+                Console.WriteLine($"Starting connect beacon ...");
+
+                var beaconEndpoint = beaconProtocol.ActivateBeacon(identifier);
+
+                Console.WriteLine($"Beacon started. Beacon URI: '{beaconEndpoint?.Address?.ToString()}'.");
+                Console.Write($"Waiting for responses. ");
+            }
+        }
+
+        //idbox beacon respond 'https://127.0.0.1/abcd'
+        public static void BeaconRespondHandler(string address, string identifier)
+        {
+            State state = new State().Load();
+            State.StartCommunications();
+            var idBoxService = State.IdBoxService;
+            var idBoxStorage = idBoxService.Storage;
+            var beaconProtocol = idBoxService.Communication.BeaconProtocol;
+
+            identifier = identifier ?? state.SelectedIdentity;
+
+            IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == identifier);
+
+            if (identity == null)
+            {
+                Console.WriteLine("Identifier not found!");
+            }
+            else
+            {
+                Console.WriteLine($"Starting connect beacon ...");
+
+                var beaconEndpoint = beaconProtocol.RespondToBeacon(address, identifier);
+
+                Console.WriteLine($"Beacon started. Beacon URI: '{beaconEndpoint?.Address?.ToString()}'.");
+                Console.Write($"Waiting for responses. ");
+            }
+        }
     }
 }

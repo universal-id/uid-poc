@@ -348,5 +348,32 @@ namespace OfflineClient
             }
         }
 
+        //idbox beacon respond 'https://127.0.0.1/abcd'
+        public static void BeaconRespondHandler(string address, string identifier)
+        {
+            State state = new State().Load();
+            State.StartCommunications();
+            var idBoxService = State.IdBoxService;
+            var idBoxStorage = idBoxService.Storage;
+            var beaconProtocol = idBoxService.Communication.BeaconProtocol;
+
+            identifier = identifier ?? state.SelectedIdentity;
+
+            IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == identifier);
+
+            if (identity == null)
+            {
+                Console.WriteLine("Identifier not found!");
+            }
+            else
+            {
+                Console.WriteLine($"Starting connect beacon ...");
+
+                var beaconEndpoint = beaconProtocol.RespondToBeacon(address, identifier);
+
+                Console.WriteLine($"Beacon started. Beacon URI: '{beaconEndpoint?.Address?.ToString()}'.");
+                Console.Write($"Waiting for responses. ");
+            }
+        }
     }
 }

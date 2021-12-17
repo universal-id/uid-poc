@@ -1,0 +1,14 @@
+{
+  "name": "uid",
+  "version": "1.0.0",
+  "description": "Universal Identity on-chain contracts",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Universal Identity Inc.",
+  "license": "MIT",
+  "devDependencies": {
+    "hardhat": "^2.8.0"
+  }
+}

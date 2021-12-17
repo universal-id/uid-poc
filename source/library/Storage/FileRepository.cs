@@ -36,6 +36,14 @@ namespace UniversalIdentity.Library.Storage
             File.WriteAllText(repositoryBoxLatestPath, rootHashHex);
         }
 
+        public bool IsInitialized()
+        {
+            if (!Directory.Exists(this.Path)) return false;
+
+            var boxRepositoryPath = IO.Path.Combine(this.Path, FileRepositoryHelper.BoxFolder);
+            return Directory.Exists(boxRepositoryPath);
+        }
+
         // Create or update one file
         public void UpdateOneFile(string basePath, string fileName, string fileContents)
         {

@@ -60,7 +60,7 @@ public class CommunicationInfraTests : TestsBase
     }
 
     [Fact] /// Developer can programmatically:
-    /// - Activeate the beacon for connections
+    /// - Activate the beacon for connections
     public void ActivateBeaconTest()
     {
         using (var testContext = new CommunicationTestContext(nameof(StartCommunicationServicesTest), this))
@@ -68,22 +68,67 @@ public class CommunicationInfraTests : TestsBase
             var firstPerson = testContext.FirstPerson;
             var swarm1 = firstPerson.Communication.Swarm;
             var beaconProtocol1 = firstPerson.Communication.BeaconProtocol;
-            beaconProtocol1.ActivateBeacon(string.Empty);
+            var identifier1 = firstPerson.Storage.PrimaryIdentity;
+            identifier1.Should().NotBeNull();
+
+            var secondPerson = testContext.SecondPerson;
+            var swarm2 = secondPerson.Communication.Swarm;
+            var beaconProtocol2 = secondPerson.Communication.BeaconProtocol;
+            var identifier2 = secondPerson.Storage.PrimaryIdentity;
+            identifier2.Should().NotBeNull();
+
+            var beaconEndpoint1 = beaconProtocol1.ActivateBeacon(identifier1!);
+            beaconEndpoint1.Should().NotBeNull();
+            beaconEndpoint1.Address.Should().NotBeNull();
+            var beaconAddress = beaconEndpoint1!.Address!.ToString();
 
             beaconProtocol1.LocalBeacon.Should().NotBeNull();
-            var beaconEndpoint1 = beaconProtocol1.LocalBeacon!;
+            beaconProtocol1.LocalBeacon!.Should().Equals(beaconEndpoint1);
             beaconEndpoint1.State.Should().Be(BeaconState.Active);
             beaconEndpoint1.IsRemote.Should().BeFalse();
             //beaconEndpoint.IsReceiver.Should().BeTrue();
             beaconEndpoint1.Address.Should().NotBeNull();
             var address = beaconEndpoint1.Address!;
 
-            var secondPerson = testContext.SecondPerson;
-            var swarm2 = secondPerson.Communication.Swarm;
-            var beaconProtocol2 = secondPerson.Communication.BeaconProtocol;
             var beaconEndpoint2 = beaconProtocol2.ConnectToBeacon(address).Result;
             beaconEndpoint2.IsRemote.Should().BeTrue();
             //beaconEndpoint2.Address.Should().NotBeNull();
+        }   
+    }
+
+    [Fact] /// Developer can programmatically:
+    /// - Activate the beacon for connections
+    /// - Respond to a beacon connection
+    public void ActivateAndRespondToBeaconTest()
+    {
+        using (var testContext = new CommunicationTestContext(nameof(StartCommunicationServicesTest), this))
+        {
+            var firstPerson = testContext.FirstPerson;
+            var swarm1 = firstPerson.Communication.Swarm;
+            var beaconProtocol1 = firstPerson.Communication.BeaconProtocol;
+            var identifier1 = firstPerson.Storage.PrimaryIdentity;
+            
+            var secondPerson = testContext.SecondPerson;
+            var swarm2 = secondPerson.Communication.Swarm;
+            var beaconProtocol2 = secondPerson.Communication.BeaconProtocol;
+            var identifier2 = secondPerson.Storage.PrimaryIdentity;
+
+            var beaconEndpoint1 = beaconProtocol1.ActivateBeacon(identifier2);
+            var beaconAddress = beaconEndpoint1!.Address.ToString();
+
+            // beaconProtocol1.LocalBeacon.Should().NotBeNull();
+            // var beaconEndpoint1 = beaconProtocol1.LocalBeacon!;
+            // beaconEndpoint1.State.Should().Be(BeaconState.Active);
+            // beaconEndpoint1.IsRemote.Should().BeFalse();
+            // //beaconEndpoint.IsReceiver.Should().BeTrue();
+            // beaconEndpoint1.Address.Should().NotBeNull();
+            // var address = beaconEndpoint1.Address!;
+
+            var beaconEndpoint2 = beaconProtocol2.ConnectToBeacon(beaconAddress).Result;
+            beaconEndpoint2.IsRemote.Should().BeTrue();
+            //beaconEndpoint2.Address.Should().NotBeNull();
+
+            var endpoint = beaconProtocol2.RespondToBeacon(beaconAddress, identifier1);
         }   
     }
 }

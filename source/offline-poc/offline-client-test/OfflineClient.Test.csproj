@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\library\Library.csproj" />
+    <ProjectReference Include="..\..\library-test\Library.Test.csproj" />
     <ProjectReference Include="..\..\offline-poc\offline-client\OfflineClient.csproj" />
   </ItemGroup>
 

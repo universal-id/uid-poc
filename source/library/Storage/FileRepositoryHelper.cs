@@ -116,11 +116,11 @@ namespace UniversalIdentity.Library.Storage
         public static (ObjectType, string, string) ParseFolderLine(string line)
         {
             var lineParts = line.Trim().Split('-');
-            if (lineParts.Count() != 3) throw new Exception($"Expected 3 parts when parsing line '{line}'");
+            if (lineParts.Count() < 3) throw new Exception($"Expected 3 parts when parsing line '{line}'");
             ObjectType objectType;
             if (!Enum.TryParse<ObjectType>(lineParts[0], true, out objectType)) throw new Exception($"Expected valid object type '{lineParts[0]}' when parsing line '{line}'");
             var hash = lineParts[1];
-            var name = lineParts[2];
+            var name = line.Substring(lineParts[0].Length + lineParts[1].Length + 2);
             return (objectType, hash, name);
         }
 

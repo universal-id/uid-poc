@@ -24,8 +24,20 @@ namespace UniversalIdentity.Library.Test.Infra.Communication
             var tempPath2 = Path.Combine(tempPath, uniqueString2);
             if( !Directory.Exists(tempPath1)) Directory.CreateDirectory(tempPath1);
             if( !Directory.Exists(tempPath2)) Directory.CreateDirectory(tempPath2);
-             this.FirstPerson = new IdBoxService(tempPath1);
-             this.SecondPerson = new IdBoxService(tempPath2);
+            this.FirstPerson = new IdBoxService(tempPath1);
+            this.SecondPerson = new IdBoxService(tempPath2);
+            this.FirstPerson.Storage.InitializeStorage();
+            this.SecondPerson.Storage.InitializeStorage();
+
+            var firstPersonIdentity = this.FirstPerson.Storage.CreateSeedIdentity();
+            this.FirstPerson.Storage.PrimaryIdentity = firstPersonIdentity.Identifier;
+            this.FirstPerson.Storage.SaveIdentity(firstPersonIdentity);
+            this.FirstPerson.Storage.Save();
+
+            var secondPersonIdentity = this.SecondPerson.Storage.CreateSeedIdentity();
+            this.SecondPerson.Storage.PrimaryIdentity = secondPersonIdentity.Identifier;
+            this.SecondPerson.Storage.SaveIdentity(secondPersonIdentity);
+            this.SecondPerson.Storage.Save();
         }
 
         public IdBoxService FirstPerson { get; set; }

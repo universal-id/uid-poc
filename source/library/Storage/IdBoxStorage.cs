@@ -18,8 +18,11 @@ namespace UniversalIdentity.Library.Storage
             this.Path = path;
             this.Repository = new FileRepository(path);
 
-            LoadIdBox(this);
-            Identities = LoadIdentities();
+            if (this.Repository.IsInitialized())
+            {
+                LoadIdBox(this);
+                Identities = LoadIdentities();
+            }
         }
 
         public FileRepository Repository { get; set; }
@@ -73,10 +76,14 @@ namespace UniversalIdentity.Library.Storage
 
         public void LoadIdBox(IdBoxStorage idBoxStorage)
         {
-            string fileName = $"f{Path.Replace(System.IO.Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(":", "")}";
-            var idBoxJsonFileContents = Repository.GetFileContents("idbox", $"f{fileName}");
-            var idBoxJson = JObject.Parse(idBoxJsonFileContents);
-            idBoxStorage.FromJson(idBoxJson);
+            //string fileName = $"f{Path.Replace(System.IO.Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(":", "")}";
+            //var idBoxJsonFileContents = Repository.GetFileContents("idbox", $"f{fileName}");
+            var idBoxJsonFileContents = Repository.GetFileContents("idbox", $"idbox.json");
+            if(idBoxJsonFileContents != null)
+            {
+                var idBoxJson = JObject.Parse(idBoxJsonFileContents);
+                idBoxStorage.FromJson(idBoxJson);
+            }
         }
 
         public IEnumerable<IdentityStorage> LoadIdentities()
@@ -122,13 +129,14 @@ namespace UniversalIdentity.Library.Storage
         public void Save()
         {
             string fileName = $"f{Path.Replace(System.IO.Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(":", "")}";
-            Repository.UpdateOneFile("idbox", $"f{fileName}", ToJson().ToString());
+            Repository.UpdateOneFile("idbox", $"idbox.json", ToJson().ToString());
         }
 
         public IdBoxStorage Get()
         {
-            string fileName = $"f{Path.Replace(System.IO.Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(":", "")}";
-            var fileContents = Repository.GetFileContents($"idbox", $"f{fileName}");
+            // string fileName = $"f{Path.Replace(System.IO.Path.DirectorySeparatorChar.ToString(), string.Empty).Replace(":", "")}";
+            // var fileContents = Repository.GetFileContents($"idbox", $"f{fileName}");
+            var fileContents = Repository.GetFileContents($"idbox", $"idbox.json");
             var updatedIdentityJson = JObject.Parse(fileContents);
             FromJson(updatedIdentityJson);
 

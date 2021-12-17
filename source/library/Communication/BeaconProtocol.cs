@@ -67,6 +67,40 @@ namespace UniversalIdentity.Library.Communication
             return connectBeacon;
         }
 
+        public BeaconEndpoint RespondToBeacon(string address, string identifier)
+        {
+            var multiAddress = new MultiAddress(address);
+            var peerConnection = this.Swarm.ConnectAsync(multiAddress).Result;
+            var peer = peerConnection.RemotePeer;
+            using (var stream = Swarm.DialAsync(peer, this.ToString()).Result)
+            {  
+                var beaconMessage = new BeaconMessage() 
+                {
+                    Type = BeaconMessageType.Connect,
+                    BeaconConnectMessage = new BeaconConnectMessage()
+                };                           
+                ProtoBuf.Serializer.SerializeWithLengthPrefix(stream, beaconMessage, PrefixStyle.Base128);
+                stream.FlushAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+
+                var beaconResponseMessage = ProtoBufHelper.ReadMessageAsync<BeaconMessage>(stream).ConfigureAwait(false).GetAwaiter().GetResult();
+                
+                if(beaconResponseMessage.Type != BeaconMessageType.Connect)
+                {
+                    throw new Exception();
+                }
+
+                var beaconConnectResponseMessage = beaconResponseMessage.BeaconConnectMessage;
+                var remoteBeacon = new BeaconEndpoint(isRemote: true)
+                {
+                    PeerConnection = peerConnection,
+                    //Name = beaconConnectResponseMessage.Name,
+                    Identifier = beaconConnectResponseMessage.Identifier,
+                    State = beaconConnectResponseMessage.State
+                };
+                return remoteBeacon;
+            }
+        }
+
         public BeaconEndpoint? LocalBeacon { get; set; }
 
         public async Task<BeaconEndpoint> ConnectToBeacon(MultiAddress address)

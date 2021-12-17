@@ -7,3 +7,7 @@ typechain
 #Hardhat files
 cache
 artifacts
+
+#VSCode and Mocha test explorer
+/.vscode/*
+!/.vscode/settings.json

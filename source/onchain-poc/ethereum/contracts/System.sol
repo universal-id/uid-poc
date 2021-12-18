@@ -3,10 +3,10 @@ pragma solidity >=0.4.21 <0.8.11;
 
 import "./Identity.sol";
 
-contract Network {
+contract System {
 
     constructor() {
-        emit NetworkCreated(address(this));
+        emit SystemCreated(address(this));
     }
 
     function createIdentity(Identity.ValueLevel _valueLevel) public returns(address identityAddress) {
@@ -25,5 +25,5 @@ contract Network {
     }
 
     event IdentityCreated(address identityAddress);
-    event NetworkCreated(address networkAddress);
+    event SystemCreated(address systemAddress);
 }

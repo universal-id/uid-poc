@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("Network", function () {
-  it("Should ensure Network is deployable", async function () {
-    const Network = await ethers.getContractFactory("Network");
+describe("System", function () {
+  it("Should ensure System is deployable", async function () {
+    const System = await ethers.getContractFactory("System");
     const Identity = await ethers.getContractFactory("Identity");
     
-    const network = await Network.deploy();
-    await network.deployed();
+    const system = await System.deploy();
+    await system.deployed();
 
     //expect(await greeter.greet()).to.equal("Hello, world!");
 

@@ -3,12 +3,12 @@ pragma solidity >=0.4.21 <0.8.11;
 
 contract Identity {
     address public owner;
-    address public network;
+    address public system;
     ValueLevel public valueLevel;
 
     constructor(address _owner, ValueLevel _valueLevel) {
         owner = _owner;
-        network = msg.sender;
+        system = msg.sender;
         valueLevel = _valueLevel;
     }
 

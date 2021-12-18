@@ -5,6 +5,17 @@
 # Visual Studio cache/options directory
 .vs/
 
-# Visual Studio code and .DS_Store
-.vscode/
+# Visual Studio code
+# - Mocha test explorer
+# - dotnet core test explorer
+
+#   Root .vscode folder and other .vscode folders
+.vscode/*
+**/.vscode/*
+
+#   Except for settings.json in root and others
+!.vscode/settings.json 
+!*/.vscode/settings.json
+
+# .DS_Store files - Mac
 .DS_Store

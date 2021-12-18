@@ -149,87 +149,87 @@ namespace UniversalIdentity.Library.Test.Specialized
             }
         }
 
-        // [Fact]
-        // public async Task MulticastDnsListenAndConnectTest()
-        // {
-        //     using (var testContext = new TestContext(nameof(MulticastDnsListenAndConnectTest), this))
-        //     {
-        //         var (firstPeerKey, firstPeer) = PeerHelper.GenerateKeyAndPeer();
-        //         var (secondPeerKey, secondPeer) = PeerHelper.GenerateKeyAndPeer();
+        [Fact]
+        public async Task MulticastDnsListenAndConnectTest()
+        {
+            using (var testContext = new TestContext(nameof(MulticastDnsListenAndConnectTest), this))
+            {
+                var (firstPeerKey, firstPeer) = PeerHelper.GenerateKeyAndPeer();
+                var (secondPeerKey, secondPeer) = PeerHelper.GenerateKeyAndPeer();
             
-        //         MultiAddress localHostAnyPortAddress = "/ip4/0.0.0.0/tcp/0";
-        //         var firstSwarm = new Swarm { LocalPeer = firstPeer };
-        //         var secondSwarm = new Swarm { LocalPeer = secondPeer };
-        //         firstSwarm.ConnectionEstablished += (s, e) =>
-        //         {
-        //             testContext.Info($"First swarm > Connection established. RemotePeer.Id:{e.RemotePeer.Id}");
-        //             testContext.Info($"\tIsIncoming:{e.IsIncoming}");
-        //         };
+                MultiAddress localHostAnyPortAddress = "/ip4/0.0.0.0/tcp/0";
+                var firstSwarm = new Swarm { LocalPeer = firstPeer };
+                var secondSwarm = new Swarm { LocalPeer = secondPeer };
+                firstSwarm.ConnectionEstablished += (s, e) =>
+                {
+                    testContext.Info($"First swarm > Connection established. RemotePeer.Id:{e.RemotePeer.Id}");
+                    testContext.Info($"\tIsIncoming:{e.IsIncoming}");
+                };
 
-        //         var discoveryCompletedEvent = new ManualResetEvent(false);
-        //         var firstMulticastDns = new MdnsNext
-        //         {
-        //             MulticastService = new MulticastService(),
-        //             LocalPeer = firstPeer
-        //         };
-        //         var secondMulticastDns = new MdnsNext
-        //         {
-        //             MulticastService = new MulticastService(),
-        //             LocalPeer = secondPeer
-        //         };
-        //         MultiAddress transmittedFirstSwarmAddress = null;
-        //         secondMulticastDns.PeerDiscovered += (s, e) =>
-        //         {
-        //             testContext.Info($"Second MDNS> Peer discovered. Id:{e.Id} - Addresses:{string.Join(',',e.Addresses)}");
-        //             if (e.Id == firstPeer.Id)
-        //             {
-        //                 transmittedFirstSwarmAddress = e.Addresses.Where(a => a.ToString().Contains("127.0.0.1")).First();
+                var discoveryCompletedEvent = new ManualResetEvent(false);
+                var firstMulticastDns = new MdnsNext
+                {
+                    MulticastService = new MulticastService(),
+                    LocalPeer = firstPeer
+                };
+                var secondMulticastDns = new MdnsNext
+                {
+                    MulticastService = new MulticastService(),
+                    LocalPeer = secondPeer
+                };
+                MultiAddress transmittedFirstSwarmAddress = null;
+                secondMulticastDns.PeerDiscovered += (s, e) =>
+                {
+                    testContext.Info($"Second MDNS> Peer discovered. Id:{e.Id} - Addresses:{string.Join(',',e.Addresses)}");
+                    if (e.Id == firstPeer.Id)
+                    {
+                        transmittedFirstSwarmAddress = e.Addresses.Where(a => a.ToString().Contains("127.0.0.1")).First();
 
-        //                 testContext.Info($"Connecting to: {transmittedFirstSwarmAddress}");
-        //                 var connection = secondSwarm.ConnectAsync(transmittedFirstSwarmAddress).Result;
-        //                 testContext.Info($"Connected to remote peer with Id: {connection.RemotePeer.Id}");
-        //                 testContext.Info($"\tRemote address: {connection.RemoteAddress}");
+                        testContext.Info($"Connecting to: {transmittedFirstSwarmAddress}");
+                        var connection = secondSwarm.ConnectAsync(transmittedFirstSwarmAddress).Result;
+                        testContext.Info($"Connected to remote peer with Id: {connection.RemotePeer.Id}");
+                        testContext.Info($"\tRemote address: {connection.RemoteAddress}");
 
-        //                 discoveryCompletedEvent.Set();
-        //             }
-        //         };
+                        discoveryCompletedEvent.Set();
+                    }
+                };
 
-        //         await firstSwarm.StartAsync();
-        //         await secondSwarm.StartAsync();
-        //         await secondMulticastDns.StartAsync();
-        //         secondMulticastDns.MulticastService.Start(); 
+                await firstSwarm.StartAsync();
+                await secondSwarm.StartAsync();
+                await secondMulticastDns.StartAsync();
+                secondMulticastDns.MulticastService.Start(); 
 
-        //         try
-        //         {
-        //             var firstSwarmListeningAddress = await firstSwarm.StartListeningAsync(localHostAnyPortAddress);
-        //             testContext.Info($"First swarm address: {firstSwarmListeningAddress}");
-        //             firstPeer.Addresses.Should().Contain(firstSwarmListeningAddress);
+                try
+                {
+                    var firstSwarmListeningAddress = await firstSwarm.StartListeningAsync(localHostAnyPortAddress);
+                    testContext.Info($"First swarm address: {firstSwarmListeningAddress}");
+                    firstPeer.Addresses.Should().Contain(firstSwarmListeningAddress);
 
-        //             // Start a new multicast service after listening on port
-        //             await firstMulticastDns.StartAsync();
-        //             firstMulticastDns.MulticastService.Start();
+                    // Start a new multicast service after listening on port
+                    await firstMulticastDns.StartAsync();
+                    firstMulticastDns.MulticastService.Start();
 
-        //             discoveryCompletedEvent.WaitOne(TimeSpan.FromSeconds(3)).Should().BeTrue();
-        //             transmittedFirstSwarmAddress.Should().BeEquivalentTo(firstSwarmListeningAddress);   
+                    discoveryCompletedEvent.WaitOne(TimeSpan.FromSeconds(3)).Should().BeTrue();
+                    transmittedFirstSwarmAddress.Should().BeEquivalentTo(firstSwarmListeningAddress);   
 
-        //             secondSwarm.KnownPeers.Should().Contain(firstPeer);
-        //             firstSwarm.KnownPeers.Should().Contain(secondPeer);      
+                    secondSwarm.KnownPeers.Should().Contain(firstPeer);
+                    firstSwarm.KnownPeers.Should().Contain(secondPeer);      
 
-        //             await firstSwarm.StopListeningAsync(localHostAnyPortAddress);
-        //             firstPeer.Addresses.Should().NotContain(transmittedFirstSwarmAddress);
-        //         }
-        //         finally
-        //         {
-        //             await firstMulticastDns.StopAsync();
-        //             await secondMulticastDns.StopAsync();
-        //             firstMulticastDns.MulticastService.Stop();
-        //             secondMulticastDns.MulticastService.Stop();
+                    await firstSwarm.StopListeningAsync(localHostAnyPortAddress);
+                    firstPeer.Addresses.Should().NotContain(transmittedFirstSwarmAddress);
+                }
+                finally
+                {
+                    await firstMulticastDns.StopAsync();
+                    await secondMulticastDns.StopAsync();
+                    firstMulticastDns.MulticastService.Stop();
+                    secondMulticastDns.MulticastService.Stop();
 
-        //             await firstSwarm.StopAsync();
-        //             await secondSwarm.StopAsync();
-        //         }
-        //     }            
-        // }
+                    await firstSwarm.StopAsync();
+                    await secondSwarm.StopAsync();
+                }
+            }            
+        }
 
           [Fact]
         public async Task CustomPingProtocolTest()

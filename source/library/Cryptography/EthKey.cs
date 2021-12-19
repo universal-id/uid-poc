@@ -77,6 +77,15 @@ public class EthKey
         return signatureString;
     }
 
+    internal static EthKey CreateFromPrivateKey(string privateKey)
+    {
+        var key = new EthKey();
+        key.IsPublic = true;
+        var publicKeyBytes = privateKey.HexToByteArray();
+        key.EthECKey = new EthECKey(publicKeyBytes, true);
+        return key;
+    }
+
     public byte[] SignGetBytes(byte[] dataHash)
     {
         var signature = this.EthECKey.Sign(dataHash);

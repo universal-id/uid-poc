@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using UniversalIdentity.Library.Cryptography;
 using UniversalIdentity.Library.Communication;
+using PeerTalk;
 
 namespace UniversalIdentity.Library.Test.Infra.Communication;
 
@@ -24,15 +25,15 @@ public class CommunicationInfraTests : TestsBase
     {
         using (var testContext = new TestContext(nameof(CreateCommunicationServiceTest), this))
         {
-            var communicationService = new CommunicationService();
-            
-            var swarm = communicationService.Swarm;
-            swarm.Should().NotBeNull();
-            swarm.IsRunning.Should().BeTrue();
+            Swarm swarm = null;
+            using (var communicationService = new CommunicationService())
+            {            
+                swarm = communicationService.Swarm;
+                swarm.Should().NotBeNull();
+                swarm.IsRunning.Should().BeTrue();
 
-            communicationService.BeaconProtocol.Should().NotBeNull();
-
-            communicationService.Dispose();
+                communicationService.BeaconProtocol.Should().NotBeNull();
+            }
             swarm.IsRunning.Should().BeFalse();
         }
     }

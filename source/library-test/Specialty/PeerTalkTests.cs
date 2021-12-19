@@ -24,6 +24,7 @@ using System.IO;
 using System.Text;
 using UniversalIdentity.Library.Test.Infra;
 using UniversalIdentity.Library.Communication;
+using System.Collections.Generic;
 
 namespace UniversalIdentity.Library.Test.Specialized
 {
@@ -157,7 +158,8 @@ namespace UniversalIdentity.Library.Test.Specialized
                 var (firstPeerKey, firstPeer) = PeerHelper.GenerateKeyAndPeer();
                 var (secondPeerKey, secondPeer) = PeerHelper.GenerateKeyAndPeer();
             
-                MultiAddress localHostAnyPortAddress = "/ip4/0.0.0.0/tcp/0";
+                //MultiAddress localHostAnyPortAddress = "/ip4/0.0.0.0/tcp/0";
+                MultiAddress localHostAnyPortAddress = "/ip4/127.0.0.1/tcp/0";
                 var firstSwarm = new Swarm { LocalPeer = firstPeer };
                 var secondSwarm = new Swarm { LocalPeer = secondPeer };
                 firstSwarm.ConnectionEstablished += (s, e) =>
@@ -178,12 +180,14 @@ namespace UniversalIdentity.Library.Test.Specialized
                     LocalPeer = secondPeer
                 };
                 MultiAddress transmittedFirstSwarmAddress = null;
+                IEnumerable<MultiAddress> transmittedFirstSwarmAddresses = null;
                 secondMulticastDns.PeerDiscovered += (s, e) =>
                 {
                     testContext.Info($"Second MDNS> Peer discovered. Id:{e.Id} - Addresses:{string.Join(',',e.Addresses)}");
                     if (e.Id == firstPeer.Id)
                     {
                         transmittedFirstSwarmAddress = e.Addresses.Where(a => a.ToString().Contains("127.0.0.1")).First();
+                        transmittedFirstSwarmAddresses = e.Addresses;
 
                         testContext.Info($"Connecting to: {transmittedFirstSwarmAddress}");
                         var connection = secondSwarm.ConnectAsync(transmittedFirstSwarmAddress).Result;
@@ -210,6 +214,13 @@ namespace UniversalIdentity.Library.Test.Specialized
                     firstMulticastDns.MulticastService.Start();
 
                     discoveryCompletedEvent.WaitOne(TimeSpan.FromSeconds(3)).Should().BeTrue();
+
+                    testContext.Info($"transmittedFirstSwarmAddresses:");
+                    foreach (var address in transmittedFirstSwarmAddresses)
+                    {
+                        testContext.Info($"\t{address.ToString()}");
+                    }
+
                     transmittedFirstSwarmAddress.Should().BeEquivalentTo(firstSwarmListeningAddress);   
 
                     secondSwarm.KnownPeers.Should().Contain(firstPeer);

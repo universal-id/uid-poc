@@ -5,16 +5,31 @@ namespace OfflineClient.Models
 {
     public class State
     {
+        public State() : this("State.json")
+        {
+        }
+
+        public State(string stateFilePath) : this("", "", stateFilePath)
+        {
+        }
+
+        public State(string path, string selectedIdentity, string stateFilePath)
+        {
+            Path = path;
+            SelectedIdentity = selectedIdentity;
+            StateFilePath = stateFilePath;
+        }
 
         [JsonPropertyName("path")]
         public string Path { get; set; }
 
         [JsonPropertyName("selectedIdentity")]
         public string SelectedIdentity { get; set; }
+        public string StateFilePath { get; init; }
 
         public string Save()
         {
-            string fileName = "State.json";
+            string fileName = StateFilePath;
             string jsonString = JsonSerializer.Serialize(this);
             File.WriteAllText(fileName, jsonString);
 
@@ -23,7 +38,7 @@ namespace OfflineClient.Models
 
         public State Load()
         {
-            string fileName = "State.json";
+            string fileName = StateFilePath;
             string jsonString = File.ReadAllText(fileName);
 
             if (string.IsNullOrWhiteSpace(jsonString))

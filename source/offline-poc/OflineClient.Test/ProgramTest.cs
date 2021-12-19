@@ -1,6 +1,7 @@
 using FluentAssertions;
 using OfflineClient;
 using OfflineClient.Models;
+using System.CommandLine;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,17 +15,17 @@ namespace OflineClient.Test
         public async Task CLIclientScenariosTest()
         {
             string path = Path.GetTempPath();
-            Program.CreateHandler(path);
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.ListHandler("--summary"); //  idbox ids list --summary
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
-            Program.SetAsPrimaryHandler(); // idbox ids setPrimary
-            Program.GetPrimaryHandler(); // idbox ids getprimary
-            Program.GetSelectedIdentityHandler("--summary"); // idbox id get --summary
-            Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
+            Program.Create(path);
+            await Program.OpenAsync(path, "State.json","",new RootCommand()); // idbox box open c:\idbox 
+            Program.List("--detail", "State.json"); // idbox ids list --detail
+            Program.List("--summary", "State.json"); //  idbox ids list --summary
+            string identifier = Program.CreateSeedIdentity( "State.json"); // idbox ids createSeed
+            Program.List("--detail", "State.json"); // idbox ids list --detail
+            Program.Select(identifier, "State.json"); // idbox id select 0xa1b2c3…d4e5f6
+            Program.SetAsPrimary("State.json"); // idbox ids setPrimary
+            Program.GetPrimary( "State.json"); // idbox ids getprimary
+            Program.GetSelectedIdentity("--summary", "State.json"); // idbox id get --summary
+            Program.SetInfo("Name", "Yara", "State.json"); // idbox id info set --key Name --value Yara
         }
 
         [Fact]
@@ -34,7 +35,7 @@ namespace OflineClient.Test
         public void CreateNewIdboxTest()
         {
             string path = Path.GetTempPath();
-            Program.CreateHandler(path); // idbox box create c:\idbox
+            Program.Create(path); // idbox box create c:\idbox
             Directory.Exists(path).Should().BeTrue();
         }
 
@@ -45,7 +46,7 @@ namespace OflineClient.Test
         public async void OpenIdboxTest()
         {
             string path = Path.GetTempPath();
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            await Program.OpenAsync(path, "State.json", "", new RootCommand()); // idbox box open c:\idbox 
             string fileName = @".\State.Json";
             File.Exists(fileName).Should().BeTrue();
 
@@ -63,8 +64,8 @@ namespace OflineClient.Test
         public async Task ListsIdentitiesTest()
         {
             string path = Path.GetTempPath();
-            Program.CreateHandler(path); // idbox box create c:\idbox
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+            Program.Create(path); // idbox box create c:\idbox
+            await Program.OpenAsync(path, "State.json", "", new RootCommand()); // idbox box open c:\idbox 
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.ListHandler("--summary"); //  idbox ids list --summary true
         }
@@ -76,9 +77,9 @@ namespace OflineClient.Test
         public async Task CreateAndSelectIdentityTest()
         {
             string path = Path.GetTempPath();
-            Program.CreateHandler(path); // idbox box create c:\idbox
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+            Program.Create(path); // idbox box create c:\idbox
+            await Program.OpenAsync(path, "State.json", "", new RootCommand()); // idbox box open c:\idbox 
+            string identifier = Program.CreateSeedIdentity("State.json"); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
 
@@ -98,9 +99,9 @@ namespace OflineClient.Test
         public async Task SetAsPrimaryIdentityTest()
         {
             string path = Path.GetTempPath();
-            Program.CreateHandler(path);
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+            Program.Create(path);
+            await Program.OpenAsync(path, "State.json", "", new RootCommand()); // idbox box open c:\idbox 
+            string identifier = Program.CreateSeedIdentity("State.json"); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
             Program.SetAsPrimaryHandler(); // idbox ids setPrimary
@@ -113,9 +114,9 @@ namespace OflineClient.Test
         public async Task GetPrimaryIdentityTest()
         {
             string path = Path.GetTempPath();
-            Program.CreateHandler(path);
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+            Program.Create(path);
+            await Program.OpenAsync(path, "State.json", "", new RootCommand()); // idbox box open c:\idbox 
+            string identifier = Program.CreateSeedIdentity("State.json"); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
             Program.SetAsPrimaryHandler(); // idbox ids setPrimary
@@ -129,9 +130,9 @@ namespace OflineClient.Test
         public async Task SetInfoTest()
         {
             string path = Path.GetTempPath();
-            Program.CreateHandler(path);
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+            Program.Create(path);
+            await Program.OpenAsync(path, "State.json", "", new RootCommand()); // idbox box open c:\idbox 
+            string identifier = Program.CreateSeedIdentity("State.json"); // idbox ids createSeed
             Program.ListHandler("--detail"); // idbox ids list --detail
             Program.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
             Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara

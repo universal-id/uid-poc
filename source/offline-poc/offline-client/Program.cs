@@ -117,6 +117,11 @@ namespace OfflineClient
         // Creates a new identity box
         public static void CreateHandler(string path)
         {
+            Create(path);
+        }
+
+        public static void Create(string path)
+        {
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -131,12 +136,12 @@ namespace OfflineClient
 
         public static void CreateSeedIdentityHandler()
         {
-            CreateSeedIdentity();
+            CreateSeedIdentity("State.json");
         }
 
-        public static string CreateSeedIdentity()
+        public static string CreateSeedIdentity(string stateFilePath)
         {
-            string path = new State().Load().Path;
+            string path = new State(stateFilePath).Load().Path;
             IdBoxStorage idBoxStorage = new(path);
 
             IdentityStorage seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
@@ -149,7 +154,13 @@ namespace OfflineClient
 
         public static void SetAsPrimaryHandler()
         {
-            State state = new State().Load();
+            SetAsPrimary("State.json");
+
+        }
+
+        public static void SetAsPrimary(string stateFilePath)
+        {
+            State state = new State(stateFilePath).Load();
             IdBoxStorage idBoxStorage = new(state.Path);
 
             IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == state.SelectedIdentity);
@@ -161,19 +172,21 @@ namespace OfflineClient
 
                 Console.WriteLine($"SeedIdentity with Identifier{identity.Identifier} is set as a Primarydentity!");
             }
-
         }
 
         // Opens an identity box
-        public static async Task OpenHandlerAsync(string path, string interactive= "non-interactive")
+        public static async Task OpenHandlerAsync(string path, string interactive = "non-interactive")
         {
-            Console.WriteLine(path);
+            await OpenAsync( path, "State.json", interactive, InitialIdbox());
+        }
+        public async static Task OpenAsync( string path, string stateFilePath, string interactive, RootCommand rootCommand)
+        {
             IdBoxStorage idBoxStorage = new(path);
             Console.WriteLine($"IdBox opened from location {path}");
 
             idBoxStorage.DisplayIdenetities();
 
-            State state = new() { SelectedIdentity = "", Path = path };
+            State state = new(path: path, selectedIdentity: "", stateFilePath: stateFilePath);
             state.Save();
 
             if (interactive == "--interactive")
@@ -187,7 +200,7 @@ namespace OfflineClient
                         args = Console.ReadLine();
                     }
 
-                    RootCommand idbox = InitialIdbox();
+                    RootCommand idbox = rootCommand;
 
                     if (args == "exit")
                         break;
@@ -201,7 +214,12 @@ namespace OfflineClient
         // Lists identities
         public static void ListHandler(string summaryordetail)
         {
-            string path = new State().Load().Path;
+            List(summaryordetail, "State.json");
+        }
+
+        public static void List(string summaryordetail, string stateFilePath)
+        {
+            string path = new State(stateFilePath).Load().Path;
             IdBoxStorage idBoxStorage = new(path);
 
             idBoxStorage.DisplayIdenetities(summaryordetail);
@@ -210,7 +228,12 @@ namespace OfflineClient
         // Accesses primary identity
         public static void GetPrimaryHandler()
         {
-            string path = new State().Load().Path;
+            GetPrimary("State.json");
+        }
+
+        public static void GetPrimary(string stateFilePath)
+        {
+            string path = new State(stateFilePath).Load().Path;
             IdBoxStorage idBoxStorage = new(path);
             idBoxStorage.Get();
 
@@ -219,7 +242,12 @@ namespace OfflineClient
 
         public static void SelectHandler(string identifier)
         {
-            State state = new State().Load();
+            Select(identifier, "State.json");
+        }
+
+        public static void Select(string identifier,string stateFilePath)
+        {
+            State state = new State(stateFilePath).Load();
             IdBoxStorage idBoxStorage = new(state.Path);
 
             IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == identifier);
@@ -236,12 +264,16 @@ namespace OfflineClient
 
                 Console.WriteLine($"Identity selected with identifier: {identity.Identifier}");
             }
-
         }
 
         public static void GetSelectedIdentityHandler(string summaryordetail)
         {
-            State state = new State().Load();
+            GetSelectedIdentity(summaryordetail, "State.json");
+        }
+
+        public static void GetSelectedIdentity(string summaryordetail,string stateFilePath)
+        {
+            State state = new State(stateFilePath).Load();
             IdBoxStorage idBoxStorage = new(state.Path);
             IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == state.SelectedIdentity);
 
@@ -276,12 +308,17 @@ namespace OfflineClient
         //Updated identity information 'k1' to 'v1'
         public static void SetInfoHandler(string key, string value)
         {
+            SetInfo(key, value, "State.json");
+        }
+
+        public static void SetInfo(string key, string value,string stateFilePath)
+        {
             if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(value))
             {
                 Console.WriteLine("Enter a key and value option (for example: idbox id info set --key k1--value v1)!");
             }
 
-            State state = new State().Load();
+            State state = new State(stateFilePath).Load();
 
             IdBoxStorage idBoxStorage = new(state.Path);
 
@@ -310,6 +347,5 @@ namespace OfflineClient
                 Console.WriteLine($"Updated identity information '{key}' to '{value}'");
             }
         }
-
     }
 }

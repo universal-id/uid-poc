@@ -21,18 +21,21 @@ namespace OfflineClient.Test
         [Fact]
         public async Task CliClientScenariosTest()
         {
-            string path = Path.GetTempPath();
-            Program.CreateHandler(path);
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.ListHandler("--summary"); //  idbox ids list --summary
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
-            Program.SetAsPrimaryHandler(); // idbox ids setPrimary
-            Program.GetPrimaryHandler(); // idbox ids getprimary
-            Program.GetSelectedIdentityHandler("--summary"); // idbox id get --summary
-            Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
+            using (var testContext = new CliTestContext(nameof(RespondToNonExistentBeaconTest), this))
+            {
+                string path = testContext.IdBoxPath;
+                Program.CreateHandler(path);
+                await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+                Program.ListHandler("--detail"); // idbox ids list --detail
+                Program.ListHandler("--summary"); //  idbox ids list --summary
+                string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+                Program.ListHandler("--detail"); // idbox ids list --detail
+                Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
+                Program.SetAsPrimaryHandler(); // idbox ids setPrimary
+                Program.GetPrimaryHandler(); // idbox ids getprimary
+                Program.GetSelectedIdentityHandler("--summary"); // idbox id get --summary
+                Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
+            }
         }
 
         [Fact]
@@ -41,9 +44,12 @@ namespace OfflineClient.Test
         /// </summary>
         public void CreateNewIdboxTest()
         {
-            string path = Path.GetTempPath();
-            Program.CreateHandler(path); // idbox box create c:\idbox
-            Directory.Exists(path).Should().BeTrue();
+            using (var testContext = new CliTestContext(nameof(RespondToNonExistentBeaconTest), this))
+            {
+                string path = testContext.IdBoxPath;
+                Program.CreateHandler(path); // idbox box create c:\idbox
+                Directory.Exists(path).Should().BeTrue();
+            }
         }
 
         [Fact]
@@ -74,11 +80,14 @@ namespace OfflineClient.Test
         /// </summary>
         public async Task ListsIdentitiesTest()
         {
-            string path = Path.GetTempPath();
-            Program.CreateHandler(path); // idbox box create c:\idbox
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.ListHandler("--summary"); //  idbox ids list --summary true
+            using (var testContext = new CliTestContext(nameof(RespondToNonExistentBeaconTest), this))
+            {
+                string path = testContext.IdBoxPath;
+                Program.CreateHandler(path); // idbox box create c:\idbox
+                await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+                Program.ListHandler("--detail"); // idbox ids list --detail
+                Program.ListHandler("--summary"); //  idbox ids list --summary true
+            }
         }
 
         [Fact]
@@ -87,21 +96,24 @@ namespace OfflineClient.Test
         /// </summary>
         public async Task CreateAndSelectIdentityTest()
         {
-            string path = Path.GetTempPath();
-            Program.CreateHandler(path); // idbox box create c:\idbox
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
+            using (var testContext = new CliTestContext(nameof(RespondToNonExistentBeaconTest), this))
+            {
+                string path = testContext.IdBoxPath;
+                Program.CreateHandler(path); // idbox box create c:\idbox
+                await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+                string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+                Program.ListHandler("--detail"); // idbox ids list --detail
+                Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
 
-            var workingDirectory = Directory.GetCurrentDirectory();
-            string filePath = System.IO.Path.Combine(workingDirectory, @"State.Json");
-            string jsonString = File.ReadAllText(filePath);
-            jsonString.Should().NotBeNull();
+                var workingDirectory = Directory.GetCurrentDirectory();
+                string filePath = System.IO.Path.Combine(workingDirectory, @"State.Json");
+                string jsonString = File.ReadAllText(filePath);
+                jsonString.Should().NotBeNull();
 
-            State result = JsonSerializer.Deserialize<State>(jsonString) ?? new State();
-            result.Path.Should().Be(path);
-            result.SelectedIdentity.Should().Be(identifier);
+                State result = JsonSerializer.Deserialize<State>(jsonString) ?? new State();
+                result.Path.Should().Be(path);
+                result.SelectedIdentity.Should().Be(identifier);
+            }
         }
 
         [Fact]
@@ -110,13 +122,16 @@ namespace OfflineClient.Test
         /// </summary>
         public async Task SetAsPrimaryIdentityTest()
         {
-            string path = Path.GetTempPath();
-            Program.CreateHandler(path);
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
-            Program.SetAsPrimaryHandler(); // idbox ids setPrimary
+            using (var testContext = new CliTestContext(nameof(RespondToNonExistentBeaconTest), this))
+            {
+                string path = testContext.IdBoxPath;
+                Program.CreateHandler(path);
+                await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+                string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+                Program.ListHandler("--detail"); // idbox ids list --detail
+                Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
+                Program.SetAsPrimaryHandler(); // idbox ids setPrimary
+            }
         }
 
         [Fact]
@@ -125,14 +140,17 @@ namespace OfflineClient.Test
         /// </summary>
         public async Task GetPrimaryIdentityTest()
         {
-            string path = Path.GetTempPath();
-            Program.CreateHandler(path);
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
-            Program.SetAsPrimaryHandler(); // idbox ids setPrimary
-            Program.GetPrimaryHandler(); // idbox ids getprimary
+            using (var testContext = new CliTestContext(nameof(RespondToNonExistentBeaconTest), this))
+            {
+                string path = testContext.IdBoxPath;
+                Program.CreateHandler(path);
+                await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+                string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+                Program.ListHandler("--detail"); // idbox ids list --detail
+                Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
+                Program.SetAsPrimaryHandler(); // idbox ids setPrimary
+                Program.GetPrimaryHandler(); // idbox ids getprimary
+            }
         }
 
         [Fact]
@@ -141,13 +159,16 @@ namespace OfflineClient.Test
         /// </summary>
         public async Task SetInfoTest()
         {
-            string path = Path.GetTempPath();
-            Program.CreateHandler(path);
-            await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
-            string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
-            Program.ListHandler("--detail"); // idbox ids list --detail
-            Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
-            Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
+            using (var testContext = new CliTestContext(nameof(RespondToNonExistentBeaconTest), this))
+            {
+                string path = testContext.IdBoxPath;
+                Program.CreateHandler(path);
+                await Program.OpenHandlerAsync(path); // idbox box open c:\idbox 
+                string identifier = Program.CreateSeedIdentity(); // idbox ids createSeed
+                Program.ListHandler("--detail"); // idbox ids list --detail
+                Program.SelectHandler(identifier); // idbox id select 0xa1b2c3�d4e5f6
+                Program.SetInfoHandler("Name", "Yara"); // idbox id info set --key Name --value Yara
+            }
         }
 
         [Fact]

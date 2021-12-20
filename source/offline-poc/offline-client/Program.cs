@@ -139,7 +139,7 @@ namespace OfflineClient
             CreateSeedIdentity("State.json");
         }
 
-        public static string CreateSeedIdentity(string stateFilePath)
+        public static string CreateSeedIdentity(string stateFilePath="State.json")
         {
             string path = new State(stateFilePath).Path;
             IdBoxStorage idBoxStorage = new(path);
@@ -179,7 +179,7 @@ namespace OfflineClient
         {
             await OpenAsync( path, "State.json", interactive, InitialIdbox());
         }
-        public async static Task OpenAsync( string path, string stateFilePath, string interactive, RootCommand rootCommand)
+        public async static Task OpenAsync(string path, string stateFilePath="State.json", string interactive = "non-interactive", RootCommand? rootCommand = null)
         {
             IdBoxStorage idBoxStorage = new(path);
             Console.WriteLine($"IdBox opened from location {path}");
@@ -200,7 +200,7 @@ namespace OfflineClient
                         args = Console.ReadLine();
                     }
 
-                    RootCommand idbox = rootCommand;
+                    RootCommand idbox = rootCommand ?? new();
 
                     if (args == "exit")
                         break;

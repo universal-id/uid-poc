@@ -5,12 +5,13 @@ namespace OfflineClient.Models
 {
     public class State
     {
-        public State() : this("State.json")
+        public State()
         {
         }
 
         public State(string stateFilePath) : this("", "", stateFilePath)
         {
+            Load();
         }
 
         public State(string path, string selectedIdentity, string stateFilePath)
@@ -48,14 +49,10 @@ namespace OfflineClient.Models
 
             State result = JsonSerializer.Deserialize<State>(jsonString) ?? new State();
 
-            if (result is not null)
-            {
-                Path = result.Path;
-                SelectedIdentity = result.SelectedIdentity;
-                return result;
-            }
+            Path = result.Path;
+            SelectedIdentity = result.SelectedIdentity;
 
-            return new State();
+            return result;
         }
     }
 }

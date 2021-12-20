@@ -53,7 +53,8 @@ namespace OflineClient.Test
             string jsonString = File.ReadAllText(fileName);
             jsonString.Should().NotBeNull();
 
-            State result = JsonSerializer.Deserialize<State>(jsonString) ?? new State();
+            State? result = JsonSerializer.Deserialize<State>(jsonString);
+            result.Should().NotBeNull();
             result.Path.Should().Be(path);
         }
 
@@ -87,7 +88,9 @@ namespace OflineClient.Test
             string jsonString = File.ReadAllText(fileName);
             jsonString.Should().NotBeNull();
 
-            State result = JsonSerializer.Deserialize<State>(jsonString) ?? new State();
+            State result = JsonSerializer.Deserialize<State>(jsonString);
+
+            result.Should().NotBeNull();
             result.Path.Should().Be(path);
             result.SelectedIdentity.Should().Be(identifier);
         }

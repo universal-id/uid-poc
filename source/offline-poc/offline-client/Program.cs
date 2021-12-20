@@ -141,7 +141,7 @@ namespace OfflineClient
 
         public static string CreateSeedIdentity(string stateFilePath)
         {
-            string path = new State(stateFilePath).Load().Path;
+            string path = new State(stateFilePath).Path;
             IdBoxStorage idBoxStorage = new(path);
 
             IdentityStorage seedIdentityStorage = idBoxStorage.CreateSeedIdentity();
@@ -160,7 +160,7 @@ namespace OfflineClient
 
         public static void SetAsPrimary(string stateFilePath)
         {
-            State state = new State(stateFilePath).Load();
+            State state = new State(stateFilePath);
             IdBoxStorage idBoxStorage = new(state.Path);
 
             IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == state.SelectedIdentity);
@@ -219,7 +219,7 @@ namespace OfflineClient
 
         public static void List(string summaryordetail, string stateFilePath)
         {
-            string path = new State(stateFilePath).Load().Path;
+            string path = new State(stateFilePath).Path;
             IdBoxStorage idBoxStorage = new(path);
 
             idBoxStorage.DisplayIdenetities(summaryordetail);
@@ -233,7 +233,7 @@ namespace OfflineClient
 
         public static void GetPrimary(string stateFilePath)
         {
-            string path = new State(stateFilePath).Load().Path;
+            string path = new State(stateFilePath).Path;
             IdBoxStorage idBoxStorage = new(path);
             idBoxStorage.Get();
 
@@ -247,7 +247,7 @@ namespace OfflineClient
 
         public static void Select(string identifier,string stateFilePath)
         {
-            State state = new State(stateFilePath).Load();
+            State state = new State(stateFilePath);
             IdBoxStorage idBoxStorage = new(state.Path);
 
             IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == identifier);
@@ -273,7 +273,7 @@ namespace OfflineClient
 
         public static void GetSelectedIdentity(string summaryordetail,string stateFilePath)
         {
-            State state = new State(stateFilePath).Load();
+            State state = new State(stateFilePath);
             IdBoxStorage idBoxStorage = new(state.Path);
             IdentityStorage? identity = idBoxStorage.Identities.FirstOrDefault(x => x.Identifier == state.SelectedIdentity);
 
@@ -318,7 +318,7 @@ namespace OfflineClient
                 Console.WriteLine("Enter a key and value option (for example: idbox id info set --key k1--value v1)!");
             }
 
-            State state = new State(stateFilePath).Load();
+            State state = new State(stateFilePath);
 
             IdBoxStorage idBoxStorage = new(state.Path);
 

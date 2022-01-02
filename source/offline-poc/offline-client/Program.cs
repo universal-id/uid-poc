@@ -1,4 +1,6 @@
-﻿using System.CommandLine;
+﻿using OfflineClient.Models;
+using System.CommandLine;
+using UniversalIdentity.Library.Storage;
 
 namespace OfflineClient
 {

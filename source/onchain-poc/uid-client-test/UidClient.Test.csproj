@@ -8,14 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="6.1.0" />
-    <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0-rc.2.21480.5" />
- 
-    <PackageReference Include="Nethereum.HdWallet" Version="4.1.1" />
-    <PackageReference Include="Nethereum.Hex" Version="4.1.1" /> </ItemGroup>
-
- <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -29,7 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\library\Library.csproj" />
+    <ProjectReference Include="..\..\library\Library.csproj" />
+    <ProjectReference Include="..\..\library-test\Library.Test.csproj" />
+    <ProjectReference Include="..\..\onchain-poc\uid-client\UidClient.csproj" />
   </ItemGroup>
 
 </Project>

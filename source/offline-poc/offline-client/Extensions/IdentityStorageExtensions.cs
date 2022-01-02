@@ -6,36 +6,39 @@ namespace OfflineClient.Extensions
     {
         public static void DisplayIdentities(this IdBoxStorage idBoxStorage, string summary= "--summary")
         {
-            List<IdentityStorage>? identities = idBoxStorage.Identities.ToList();
+            List<IdentityStorage>? identities = idBoxStorage.Identities?.ToList();
 
-            Console.WriteLine($"{identities.Count} identities, Primary identity:{idBoxStorage.PrimaryIdentity}");
+            Console.WriteLine($"{identities?.Count} identities, Primary identity:{idBoxStorage.PrimaryIdentity}");
 
-            if (summary== "--summary")
+            if (identities != null)
             {
-                int i = 0;
-                foreach (IdentityStorage? identity in identities)
+                if (summary== "--summary")
                 {
-                    i++;
-                    Console.WriteLine($"Identity{i} | Identifier: {identity.Identifier}");
-                }
-            }
-            else
-            {
-                int i = 0;
-                foreach (IdentityStorage identity in identities)
-                {
-                    i++;
-                    Console.WriteLine($"Identity{i}:");
-                    Console.WriteLine($" Identifier: {identity.Identifier}");
-                    Console.WriteLine($" Level: {identity.Level}");
-
-                    Console.WriteLine(" Keys:");
-                    foreach (KeyStorage key in identity.Keys)
+                    int i = 0;
+                    foreach (IdentityStorage? identity in identities)
                     {
-                        Console.WriteLine($"  Identifier: {key.Identifier}");
-                        Console.WriteLine($"  Level: {key.Level}");
-                        Console.WriteLine($"  Created: {key.Created}");
-                        Console.WriteLine($"  PublicKey: {key.PublicKey}");
+                        i++;
+                        Console.WriteLine($"Identity{i} | Identifier: {identity.Identifier}");
+                    }
+                }
+                else
+                {
+                    int i = 0;
+                    foreach (IdentityStorage identity in identities)
+                    {
+                        i++;
+                        Console.WriteLine($"Identity{i}:");
+                        Console.WriteLine($" Identifier: {identity.Identifier}");
+                        Console.WriteLine($" Level: {identity.Level}");
+
+                        Console.WriteLine(" Keys:");
+                        foreach (KeyStorage key in identity.Keys)
+                        {
+                            Console.WriteLine($"  Identifier: {key.Identifier}");
+                            Console.WriteLine($"  Level: {key.Level}");
+                            Console.WriteLine($"  Created: {key.Created}");
+                            Console.WriteLine($"  PublicKey: {key.PublicKey}");
+                        }
                     }
                 }
             }

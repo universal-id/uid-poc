@@ -1,0 +1,10 @@
+{
+    "recommendations": [ 
+        "ms-dotnettools.csharp", 
+        "formulahendry.dotnet-test-explorer",
+        "yzhang.markdown-all-in-one",
+        "davidanson.vscode-markdownlint",
+        "streetsidesoftware.code-spell-checker"
+    ]
+
+}

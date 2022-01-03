@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using UniversalIdentity.Library;
 
 namespace OfflineClient.Models
 {
@@ -55,11 +56,10 @@ namespace OfflineClient.Models
             return result;
         }
 
-        public static void StartCommunications()
+        public void StartCommunications()
         {
-            var state = new State().Load();
-            if (string.IsNullOrEmpty(state.Path)) throw new System.Exception();
-            State.IdBoxService = new IdBoxService(state.Path);
+            if (string.IsNullOrEmpty(Path)) throw new Exception();
+            State.IdBoxService = new IdBoxService(Path);
         }
 
         private static IdBoxService idBoxService;

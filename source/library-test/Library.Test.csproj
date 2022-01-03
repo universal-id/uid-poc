@@ -26,7 +26,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
+	 <PackageReference Include="UniversalIdentity.Forks.PeerTalk" Version="0.42.0" />
+ </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\library\Library.csproj" />

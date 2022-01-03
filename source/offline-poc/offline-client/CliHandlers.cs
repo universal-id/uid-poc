@@ -292,8 +292,8 @@ namespace OfflineClient
         //idbox beacon activate
         public void ActivateBeaconHandler(string path, string identifier)
         {
-            State state = new State().Load();
-            State.StartCommunications();
+            State state = new State(Path.Combine(ExecutionPath, "State.json")).Load();
+            state.StartCommunications();
             var idBoxService = State.IdBoxService;
             var idBoxStorage = idBoxService.Storage;
             var beaconProtocol = idBoxService.Communication.BeaconProtocol;
@@ -320,8 +320,8 @@ namespace OfflineClient
         //idbox beacon respond 'https://127.0.0.1/abcd'
         public void BeaconRespondHandler(string address, string identifier)
         {
-            State state = new State().Load();
-            State.StartCommunications();
+            State state = new State(Path.Combine(ExecutionPath, "State.json")).Load();
+            state.StartCommunications();
             var idBoxService = State.IdBoxService;
             var idBoxStorage = idBoxService.Storage;
             var beaconProtocol = idBoxService.Communication.BeaconProtocol;

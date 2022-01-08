@@ -1,4 +1,4 @@
-﻿namespace OnlineService.Models
+﻿namespace ContactsService.Models
 {
     public class AppEvent
     {

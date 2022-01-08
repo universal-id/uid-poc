@@ -56,19 +56,38 @@ public class InteractionInfraTests : TestsBase
     }
 
     [Fact] /// Developer can programmatically:
-    /// - create and store a new key
-    public void InteractionServiceTest()
+    /// - Create and store a new key
+    /// - Access and use key directly from the interaction service implementation
+    public void InteractionServiceCreateAndAccessKeyTest()
     {
-        using (var testContext = new InteractionTestContext(nameof(InteractionServiceTest), this))
+        using (var testContext = new InteractionTestContext(nameof(InteractionServiceCreateAndAccessKeyTest), this))
         {
             var interactionService = testContext.InteractionService;
 
             var key = interactionService.CreateAndStoreNewKey();
 
             key.Should().NotBeNull();
+            var keyIdentifier = key.GetIdentifier();
+            testContext.Info($"Key identifier: {keyIdentifier}");
+            keyIdentifier.Should().NotBeNullOrEmpty();
             key.IsPublic.Should().BeTrue();
-            key.GetPublicIdentifier().Should().NotBeNull();
-            //key.GetPrivateKey().Should().BeNullOrEmpty();
+            key.GetPublicIdentifier().Should().NotBeNullOrEmpty();
+
+            interactionService.IsKeyStored(keyIdentifier).Should().BeTrue();
+            var privateEthKey = interactionService.GetStoredPrivateKey(keyIdentifier);
+            privateEthKey.Should().NotBeNull();
+            privateEthKey.IsPublic.Should().BeFalse();
+            var privateKey = privateEthKey.GetPrivateKey();
+            testContext.Info($"Private key: {privateKey}");
+            privateKey.Should().NotBeNullOrEmpty();
+
+            interactionService.GetStoredKeyIdentifiers().Should().Contain(keyIdentifier);
+            var publicEthKey = interactionService.GetStoredKey(keyIdentifier);
+            publicEthKey.Should().NotBeNull();
+            publicEthKey.IsPublic.Should().BeTrue();
+            var publicKey = publicEthKey.GetPublicKey();
+            testContext.Info($"Public key: {publicKey}");
+            publicKey.Should().NotBeNullOrEmpty();
         }   
     }
 }

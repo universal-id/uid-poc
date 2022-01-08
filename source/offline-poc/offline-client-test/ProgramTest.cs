@@ -64,9 +64,9 @@ namespace OfflineClient.Test
             using (var testContext = new CliTestContext(nameof(OpenIdboxTest), this))
             {
                 string path = testContext.IdBoxPath;
-                var cliHandlers = new CliHandlers(Directory.GetCurrentDirectory());
+                var cliHandlers = new CliHandlers(testContext.CliPath);
                 await cliHandlers.OpenHandlerAsync(path); // idbox box open c:\idbox 
-                string fileName = @".\State.Json";
+                string fileName = System.IO.Path.Combine(testContext.CliPath, @"State.Json");
                 File.Exists(fileName).Should().BeTrue();
 
                 string jsonString = File.ReadAllText(fileName);
@@ -104,14 +104,14 @@ namespace OfflineClient.Test
             using (var testContext = new CliTestContext(nameof(RespondToNonExistentBeaconTest), this))
             {
                 string path = testContext.IdBoxPath;
-                var cliHandlers = new CliHandlers(Directory.GetCurrentDirectory());
+                var cliHandlers = new CliHandlers(testContext.CliPath);
                 cliHandlers.CreateHandler(path); // idbox box create c:\idbox
                 await cliHandlers.OpenHandlerAsync(path); // idbox box open c:\idbox 
                 string identifier = cliHandlers.CreateSeedIdentity(); // idbox ids createSeed
                 cliHandlers.ListHandler("--detail"); // idbox ids list --detail
                 cliHandlers.SelectHandler(identifier); // idbox id select 0xa1b2c3…d4e5f6
 
-                string fileName = @".\State.Json";
+                string fileName = System.IO.Path.Combine(testContext.CliPath, @"State.Json");
                 string jsonString = File.ReadAllText(fileName);
                 jsonString.Should().NotBeNull();
 

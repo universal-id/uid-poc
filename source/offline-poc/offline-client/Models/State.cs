@@ -6,16 +6,32 @@ namespace OfflineClient.Models
 {
     public class State
     {
+        public State()
+        {
+        }
+
+        public State(string stateFilePath) : this("", "", stateFilePath)
+        {
+            Load();
+        }
+
+        public State(string path, string selectedIdentity, string stateFilePath)
+        {
+            Path = path;
+            SelectedIdentity = selectedIdentity;
+            StateFilePath = stateFilePath;
+        }
 
         [JsonPropertyName("path")]
         public string Path { get; set; }
 
         [JsonPropertyName("selectedIdentity")]
         public string SelectedIdentity { get; set; }
+        public string StateFilePath { get; init; }
 
         public string Save()
         {
-            string fileName = "State.json";
+            string fileName = StateFilePath;
             string jsonString = JsonSerializer.Serialize(this);
             File.WriteAllText(fileName, jsonString);
 
@@ -24,7 +40,7 @@ namespace OfflineClient.Models
 
         public State Load()
         {
-            string fileName = "State.json";
+            string fileName = StateFilePath;
             string jsonString = File.ReadAllText(fileName);
 
             if (string.IsNullOrWhiteSpace(jsonString))
@@ -34,21 +50,16 @@ namespace OfflineClient.Models
 
             State result = JsonSerializer.Deserialize<State>(jsonString) ?? new State();
 
-            if (result is not null)
-            {
-                Path = result.Path;
-                SelectedIdentity = result.SelectedIdentity;
-                return result;
-            }
+            Path = result.Path;
+            SelectedIdentity = result.SelectedIdentity;
 
-            return new State();
+            return result;
         }
 
-        public static void StartCommunications()
+        public void StartCommunications()
         {
-            var state = new State().Load();
-            if (string.IsNullOrEmpty(state.Path)) throw new System.Exception();
-            State.IdBoxService = new IdBoxService(state.Path);
+            if (string.IsNullOrEmpty(Path)) throw new Exception();
+            State.IdBoxService = new IdBoxService(Path);
         }
 
         private static IdBoxService idBoxService;
@@ -58,10 +69,10 @@ namespace OfflineClient.Models
             {
                 return idBoxService;
             }
-            
+
             set
             {
-                if(idBoxService != value
+                if (idBoxService != value
                     && idBoxService != null)
                 {
                     idBoxService.Communication.Dispose();
@@ -70,5 +81,6 @@ namespace OfflineClient.Models
                 idBoxService = value;
             }
         }
+
     }
 }

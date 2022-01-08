@@ -1,2 +1,7 @@
-# .DS_Store files - Mac
-.DS_Store
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache/options directory
+.vs/
+*.user

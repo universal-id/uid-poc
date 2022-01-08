@@ -45,7 +45,7 @@ public class InteractionService
         };
 
         var keysPath = System.IO.Path.Combine(this.Path, KeysFolder);
-        var keyPath = System.IO.Path.Combine(keysPath, $"{newKey.GetIdentifier()}.json");
+        var keyPath = System.IO.Path.Combine(keysPath, $"{newKey.GetIdentifier().Replace(":", "")}.json");
         var keyJsonString = keyJson.ToString();
         File.WriteAllText(keyPath, keyJsonString);
 

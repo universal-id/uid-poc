@@ -193,16 +193,16 @@ namespace OfflineClient.Test
                 var cliHandlers = new CliHandlers(Directory.GetCurrentDirectory());
                 cliHandlers.CreateHandler(path);
                 await cliHandlers.OpenHandlerAsync(path); // idbox box open c:\idbox 
-                string identifier = cliHandlers.CreateSeedIdentity(); // idbox ids createSeed
+                //string identifier = cliHandlers.CreateSeedIdentity(); // idbox ids createSeed
                 cliHandlers.SetAsPrimaryHandler(); // idbox ids setPrimary
 
 
                 var identityStorage = new IdBoxStorage(path);
-                 identifier = identityStorage.PrimaryIdentity;
+                var identifier = identityStorage.PrimaryIdentity;
                 identifier.Should().NotBeNull();
 
                 cliHandlers.ActivateBeaconHandler(path, identifier!); // idbox beacon activate
-                
+
                 var idBoxService = State.IdBoxService;
                 idBoxService.Should().NotBeNull();
                 //var idBoxStorage = idBoxService.Storage;

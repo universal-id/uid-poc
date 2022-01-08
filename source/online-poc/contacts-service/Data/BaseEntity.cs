@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using System.Collections.Generic;
 
-namespace OnlineService.Data
+namespace ContactsService.Data
 {
     /// <summary>
     /// Base class for entities

@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OnlineService.Data
+namespace ContactsService.Data
 {
     public interface IMongoDBContext
     {

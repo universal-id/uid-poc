@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OnlineService.Data
+namespace ContactsService.Data
 {
     /// <summary>
     /// MongoDB repository
@@ -131,7 +131,7 @@ namespace OnlineService.Data
         /// Update entity
         /// </summary>
         /// <param name="entity">Entity</param>
-        public virtual T Update(T entity,bool isUpsert=true)
+        public virtual T Update(T entity, bool isUpsert = true)
         {
             _collection.ReplaceOne(x => x.Id == entity.Id, entity, new ReplaceOptions() { IsUpsert = isUpsert });
             return entity;

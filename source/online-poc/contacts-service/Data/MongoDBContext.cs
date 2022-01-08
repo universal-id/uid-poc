@@ -5,7 +5,7 @@ using MongoDB.Driver.Core.Operations;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OnlineService.Data
+namespace ContactsService.Data
 {
     public class MongoDBContext : IMongoDBContext
     {

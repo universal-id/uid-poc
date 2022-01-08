@@ -3,7 +3,7 @@ using MongoDB.Driver.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OnlineService.Data
+namespace ContactsService.Data
 {
     /// <summary>
     /// Repository

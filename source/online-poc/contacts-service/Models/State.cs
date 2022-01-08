@@ -1,6 +1,6 @@
-﻿using OnlineService.Data;
+﻿using ContactsService.Data;
 
-namespace OnlineService.Models
+namespace ContactsService.Models
 {
     public class State : BaseEntity
     {

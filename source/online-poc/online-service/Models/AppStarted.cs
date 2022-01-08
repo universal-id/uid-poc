@@ -2,6 +2,6 @@
 {
     public class AppStarted : AppEvent
     {
-        public DateTime StartedDateTime { get; set; }
+        public string? UniqueId { get; set; }
     }
 }

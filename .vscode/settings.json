@@ -1,0 +1,4 @@
+{
+    "dotnet-test-explorer.testProjectPath": "**/*Test.@(csproj|vbproj|fsproj)",
+    "testExplorer.hideWhen": "noTests"
+}

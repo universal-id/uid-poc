@@ -1,8 +1,9 @@
-﻿using OfflineClient.Models;
+﻿using UniversalIdentity.Cli.Models;
 using System.CommandLine;
 using UniversalIdentity.Library.Storage;
+using UniversalIdentity.Cli.Offline;
 
-namespace OfflineClient
+namespace UniversalIdentity.Cli
 {
     // Creates a new identity box
     // Opens an identity box in interactive mode
@@ -13,7 +14,7 @@ namespace OfflineClient
     {
         static async Task Main(string[] args)
         {
-            CliHandlers cliHandlers = new CliHandlers(Directory.GetCurrentDirectory());
+            OfflineCliHandlers cliHandlers = new OfflineCliHandlers(Directory.GetCurrentDirectory());
             RootCommand idbox = cliHandlers.InitialIdbox();
 
             await idbox.InvokeAsync(args);

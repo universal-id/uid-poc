@@ -1,6 +1,6 @@
 ﻿using UniversalIdentity.Library.Storage;
 
-namespace OfflineClient.Extensions
+namespace UniversalIdentity.Cli.Extensions
 {
     public static class IdentityStorageExtensions
     {

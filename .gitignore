@@ -5,3 +5,12 @@
 # Visual Studio cache/options directory
 .vs/
 *.user
+
+#   Root .vscode folder and other .vscode folders
+.vscode/*
+**/.vscode/*
+
+#   Except for settings.json in root and others
+!.vscode/settings.json 
+!.vscode/extensions.json 
+!*/.vscode/extensions.json

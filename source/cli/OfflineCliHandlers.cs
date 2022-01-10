@@ -1,14 +1,14 @@
-﻿using OfflineClient.Extensions;
-using OfflineClient.Models;
+﻿using UniversalIdentity.Cli.Extensions;
+using UniversalIdentity.Cli.Models;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using UniversalIdentity.Library.Storage;
 
-namespace OfflineClient
+namespace UniversalIdentity.Cli.Offline
 {
-    public class CliHandlers
+    public class OfflineCliHandlers
     {
-        public CliHandlers(string executionPath)
+        public OfflineCliHandlers(string executionPath)
         {
             ExecutionPath = executionPath;
         }

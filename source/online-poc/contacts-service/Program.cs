@@ -1,22 +1,18 @@
 using ContactsService.Data;
-using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 #region MongoDb
-var connectionString = builder.Configuration["ConnectionString"];
-var mongourl = new MongoUrl(connectionString);
-var databaseName = mongourl.DatabaseName;
-builder.Services.AddScoped(c => new MongoClient(mongourl).GetDatabase(databaseName));
+var connectionString = builder.Configuration["DatabaseSettings:MongoConnectionString"];
+var databaseName = builder.Configuration["DatabaseSettings:DatabaseName"];
+builder.Services.AddScoped(c => new MongoClient(connectionString).GetDatabase(databaseName));
 builder.Services.AddScoped<IMongoDBContext, MongoDBContext>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 #endregion

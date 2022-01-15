@@ -16,9 +16,9 @@ using UniversalIdentity.Cli.Offline;
 
 namespace UniversalIdentity.Offline.Cli.Test
 {
-    public class ProgramTest : TestsBase
+    public class OfflineCliTests : TestsBase
     {
-        public ProgramTest(ITestOutputHelper outputHelper) : base(outputHelper) {} // Wires up test logging
+        public OfflineCliTests(ITestOutputHelper outputHelper) : base(outputHelper) {} // Wires up test logging
 
         [Fact]
         public async Task CliClientScenariosTest()

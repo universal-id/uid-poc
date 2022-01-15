@@ -1,0 +1,71 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="AddEditContactView"
+             x:Class="ClinetOnline.Views.AddEditContactView"
+             BackgroundColor="{DynamicResource SecondaryColor}"
+             BindingContext="{Binding CurrentViewModel}"
+             >
+    <ScrollView>
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Image Grid.Column="0" Grid.RowSpan="2" WidthRequest="100" HeightRequest="100" Source="nima.jpg"/>
+                    <Label Grid.Column="1" Grid.Row="0" Text="{Binding Contact.Name}" Margin="5,0,0,0"/>
+                    <Label Grid.Column="1" Grid.Row="1" Text="Me" />
+                </Grid>
+                <Button x:Name="saveButton"  Grid.Column="1" Text="Save"  Command="{Binding SaveCommand}" IsVisible="{Binding EditMode,Mode=TwoWay}"/>
+                <Button x:Name="editButton"  Grid.Column="1" Text="Edit"  Command="{Binding EditCommand}" IsVisible="{Binding NotEditMode,Mode=TwoWay}"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Margin="6" Text="Name"/>
+                <Label Grid.Column="0" Grid.Row="1" Margin="6" Text="Phone number"/>
+                <Label Grid.Column="0" Grid.Row="2" Margin="6" Text="Email"/>
+                <Label Grid.Column="0" Grid.Row="3" Margin="6" Text="Address"/>
+
+                <Entry Text="{Binding Contact.Name}" IsVisible="{Binding EditMode,Mode=TwoWay}" Grid.Column="1" Grid.Row="0" Margin="6" TextChanged="Validate"/>
+                <Entry  Text="{Binding Contact.Phone}"  IsVisible="{Binding EditMode,Mode=TwoWay}" Grid.Column="1" Grid.Row="1" Margin="6" TextChanged="Validate"/>
+                <Entry  Text="{Binding Contact.Email}"  IsVisible="{Binding EditMode,Mode=TwoWay}" Grid.Column="1" Grid.Row="2" Margin="6" TextChanged="Validate"/>
+                <Entry  Text="{Binding Contact.Address}"  IsVisible="{Binding EditMode,Mode=TwoWay}" Grid.Column="1" Grid.Row="3" Margin="6" TextChanged="Validate"/>
+
+
+                <Entry  Text="{Binding Contact.Name}"  IsVisible="{Binding NotEditMode,Mode=TwoWay}" Grid.Column="1" Grid.Row="0" Margin="6"/>
+                <Label  Text="{Binding Contact.Phone}"  IsVisible="{Binding NotEditMode,Mode=TwoWay}" Grid.Column="1" Grid.Row="1" Margin="6"/>
+                <Label  Text="{Binding Contact.Email}"  IsVisible="{Binding NotEditMode,Mode=TwoWay}" Grid.Column="1" Grid.Row="2" Margin="6"/>
+                <Label  Text="{Binding Contact.Address}"  IsVisible="{Binding NotEditMode,Mode=TwoWay}" Grid.Column="1" Grid.Row="3" Margin="6"/>
+
+
+            </Grid>
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

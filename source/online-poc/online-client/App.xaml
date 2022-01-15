@@ -2,26 +2,76 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
              xmlns:local="clr-namespace:OnlineClient"
+             xmlns:view="clr-namespace:ClinetOnline.Views"
              x:Class="OnlineClient.App"
              windows:Application.ImageDirectory="Assets">
-    <Application.Resources>
-        <ResourceDictionary>
+    <Application.MainPage>
+        <Shell Navigated="Navigated"
+            FlyoutWidth="68"
+            FlyoutBackgroundColor="Red"
+            FlyoutBehavior="{OnIdiom Phone=Disabled, Default=Locked}">
 
-            <Color x:Key="PrimaryColor">#512bdf</Color>
-            <Color x:Key="SecondaryColor">White</Color>
+            <Shell.FlyoutHeaderTemplate>
+                <DataTemplate>
+                    <BoxView HeightRequest="68"/>
+                </DataTemplate>
 
-            <Style TargetType="Label">
-                <Setter Property="TextColor" Value="{DynamicResource PrimaryColor}" />
-                <Setter Property="FontFamily" Value="OpenSansRegular" />
-            </Style>
+            </Shell.FlyoutHeaderTemplate>
 
-            <Style TargetType="Button">
-                <Setter Property="TextColor" Value="{DynamicResource SecondaryColor}" />
-                <Setter Property="FontFamily" Value="OpenSansRegular" />
-                <Setter Property="BackgroundColor" Value="{DynamicResource PrimaryColor}" />
-                <Setter Property="Padding" Value="14,10" />
-            </Style>
+            <Shell.FlyoutFooterTemplate>
+                <DataTemplate>
+                    <Grid RowDefinitions="68">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
 
-        </ResourceDictionary>
-    </Application.Resources>
+                        </Grid.GestureRecognizers>
+                        <Image Source="tab_settings.png"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               WidthRequest="40"
+                               HeightRequest="40">
+
+                        </Image>
+                    </Grid>
+                </DataTemplate>
+
+            </Shell.FlyoutFooterTemplate>
+
+            <!-- Desktop/Tablet-->
+            <FlyoutItem Route="start" FlyoutItemIsVisible="False" Title="Start">
+                <ShellContent ContentTemplate="{DataTemplate view:StartView}"/>
+            </FlyoutItem>
+            <FlyoutItem Route="addedit" FlyoutItemIsVisible="False" Title="AddEditContactView">
+                <ShellContent ContentTemplate="{DataTemplate view:AddEditContactView}"/>
+            </FlyoutItem>
+            <FlyoutItem Route="dashboard" Title="DashboardPage" Icon="tab_favorites.png">
+                <ShellContent ContentTemplate="{DataTemplate view:DashboardView}"/>
+            </FlyoutItem>
+            <FlyoutItem Route="contacts" Title="ContactsPage" Icon="tab_favorites.png">
+                <ShellContent ContentTemplate="{DataTemplate view:ContactsView}"/>
+            </FlyoutItem>
+            <FlyoutItem Route="connect" Title="ConnentPage" Icon="tab_map.png">
+                <ShellContent ContentTemplate="{DataTemplate view:ConnectView}"/>
+            </FlyoutItem>
+            <FlyoutItem Route="share" Title="SharePage" Icon="tab_map.png">
+                <ShellContent ContentTemplate="{DataTemplate view:ShareView}"/>
+            </FlyoutItem>
+            <FlyoutItem Route="settings" FlyoutItemIsVisible="False" >
+                <ShellContent ContentTemplate="{DataTemplate view:SettingsView}"/>
+            </FlyoutItem>
+
+            <Shell.ItemTemplate>
+                <DataTemplate>
+                    <Grid
+                        RowDefinitions="28" HeightRequest="28">
+                        <Image Source="{Binding FlyoutIcon}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               />
+                    </Grid>
+                </DataTemplate>
+
+            </Shell.ItemTemplate>
+        </Shell>
+    </Application.MainPage>
 </Application>

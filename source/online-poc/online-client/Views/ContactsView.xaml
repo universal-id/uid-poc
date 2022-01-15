@@ -1,0 +1,47 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             Title="ContactsView"
+             x:Class="ClinetOnline.Views.ContactsView"
+              xmlns:mctBehaviors="clr-namespace:CommunityToolkit.Maui.Behaviors;assembly=CommunityToolkit.Maui"
+             BackgroundColor="{DynamicResource SecondaryColor}"
+             BindingContext="{Binding CurrentViewModel}"
+           >
+    <ScrollView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+                <Button Text="Add Contact" Command="{Binding AddContactCommand}" Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Start"/>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="End" Grid.Column="1">
+                    <Label Text="Search:"/>
+                    <Editor Text="{Binding SearchInput}" TextChanged="SearchInputChanged" WidthRequest="150" HeightRequest="40" />
+                    <Button Text="X" Command="{Binding ClearSearchCommand}" HeightRequest="40"/>
+                </StackLayout>
+            </Grid>
+
+            <ListView x:Name="contactsListView" HasUnevenRows="True" Grid.Row="1" ItemsSource="{Binding Contacts}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Name}"/>
+                            </VerticalStackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.Behaviors>
+                    <mctBehaviors:EventToCommandBehavior EventName="ItemTapped"  Command="{Binding DataContext.EditContactCommand}"/>
+                </ListView.Behaviors>
+            </ListView>
+
+        </Grid>
+
+    </ScrollView>
+
+</ContentPage>

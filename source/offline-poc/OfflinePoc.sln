@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfflineClient", "offline-client\OfflineClient.csproj", "{55BCFCB1-12AE-49EC-8C5A-7FFF10823D38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cli", "..\cli\Cli.csproj", "{55BCFCB1-12AE-49EC-8C5A-7FFF10823D38}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library", "..\library\Library.csproj", "{A4F64564-FC78-4C60-AEFF-12A74E680662}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfflineClient.Test", "offline-client-test\OfflineClient.Test.csproj", "{A986E7D3-9877-43D3-A4F5-FEE0414D8669}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Library.Test", "..\library-test\Library.Test.csproj", "{FA55CA0D-EA0F-4F8E-9E9D-B5FF58E222C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfflineCli.Test", "offline-cli-test\OfflineCli.Test.csproj", "{A986E7D3-9877-43D3-A4F5-FEE0414D8669}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{A986E7D3-9877-43D3-A4F5-FEE0414D8669}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A986E7D3-9877-43D3-A4F5-FEE0414D8669}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A986E7D3-9877-43D3-A4F5-FEE0414D8669}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA55CA0D-EA0F-4F8E-9E9D-B5FF58E222C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA55CA0D-EA0F-4F8E-9E9D-B5FF58E222C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA55CA0D-EA0F-4F8E-9E9D-B5FF58E222C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA55CA0D-EA0F-4F8E-9E9D-B5FF58E222C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

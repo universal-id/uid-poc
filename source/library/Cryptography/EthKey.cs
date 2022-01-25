@@ -80,7 +80,7 @@ public class EthKey
     internal static EthKey CreateFromPrivateKey(string privateKey)
     {
         var key = new EthKey();
-        key.IsPublic = true;
+        key.IsPublic = false;
         var publicKeyBytes = privateKey.HexToByteArray();
         key.EthECKey = new EthECKey(publicKeyBytes, true);
         return key;

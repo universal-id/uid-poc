@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using UniversalIdentity.Library;
 
-namespace OfflineClient.Models
+namespace UniversalIdentity.Cli.Models
 {
     public class State
     {

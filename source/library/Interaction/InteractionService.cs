@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace UniversalIdentity.Library.Interaction;
 
@@ -53,10 +55,10 @@ public class InteractionService
         return publicKey;
     }
 
-    private EthKey GetStoredPrivateKey(string keyIdentifier)
+    public EthKey GetStoredPrivateKey(string keyIdentifier)
     {
         var keysPath = System.IO.Path.Combine(this.Path, KeysFolder);
-        var keyPath = System.IO.Path.Combine(keysPath, keyIdentifier);
+        var keyPath = System.IO.Path.Combine(keysPath, $"{keyIdentifier.Replace(":", "")}.json");
         var fileContents = File.ReadAllText(keyPath);
         var keyJson = JObject.Parse(fileContents);
         var privateKey = (string)keyJson["privateKey"];
@@ -64,7 +66,7 @@ public class InteractionService
         return storedKey;
     }
 
-    private EthKey GetStoredKey(string keyIdentifier)
+    public EthKey GetStoredKey(string keyIdentifier)
     {
         var storedPrivateKey = GetStoredPrivateKey(keyIdentifier);
         var storedPublicKey = new EthKey(storedPrivateKey.GetPublicKey());
@@ -73,16 +75,61 @@ public class InteractionService
 
     public IEnumerable<string> GetStoredKeyIdentifiers()
     {
-        throw new NotImplementedException();
+        var keysPath = System.IO.Path.Combine(this.Path, KeysFolder);
+        foreach (var keyFileName in Directory.EnumerateFiles(keysPath))
+        {
+            var fileContents = File.ReadAllText(keyFileName);
+            var keyJson = JObject.Parse(fileContents);
+            var identifier = (string)keyJson["identifier"];
+            yield return identifier;
+        }
+        // var keyFileNames = Directory.EnumerateFiles(keysPath)
+        //     .Select(fileName => System.IO.Path.GetFileName(fileName));
+        // var keyIdentifiers = keyFileNames
+        //     .Where(fileName => fileName.LastIndexOf(".json") != -1)
+        //     .Select(fileName => fileName.Remove(fileName.LastIndexOf(".json")));
+        // return keyIdentifiers;
     }
 
     public bool IsKeyStored(string keyIdentifier)
     {
-        throw new NotImplementedException();
+        var keysPath = System.IO.Path.Combine(this.Path, KeysFolder);
+        var keyPath = System.IO.Path.Combine(keysPath, $"{keyIdentifier.Replace(":", "")}.json");
+        if (!File.Exists(keyPath)) return false;
+        var fileContents = File.ReadAllText(keyPath);
+        var keyJson = JObject.Parse(fileContents);
+        var privateKey = (string)keyJson["privateKey"];
+        var storedKeyIdentifier = (string)keyJson["identifier"];
+        return keyIdentifier.Equals(storedKeyIdentifier, StringComparison.OrdinalIgnoreCase);
     }
 
     public byte[] SignData(string keyIdentifier, byte[] data)
     {
         throw new NotImplementedException();
     }
+
+    public async Task<byte[]> SignDataAsync(string keyIdentifier, byte[] data)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SignDataRequest(string keyIdentifier, byte[] data)
+    {
+        throw new NotImplementedException();
+    }
+
+    //public event SignDataRequested()
+
+    public Func<byte[], string, byte[]> SignRequestHandler { get; set; }
+
+    //public event EventHandler<SignRequestEventArgs> SignDataRequested;
+
 }
+
+// public class SignRequestEventArgs : EventArgs
+// {
+//     public SignRequestEventArgs(string keyIdentifier) {}
+
+//     public byte[] Data { get; set; }
+//     public string keyIdentifier { get; set; }
+// }

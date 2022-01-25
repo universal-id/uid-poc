@@ -16,86 +16,83 @@ namespace UniversalIdentity.Cli.Offline
         public State? State { get; set; } // Encapsulates access to disk
                                           //public IdBoxService IdBoxService { get; set; } // Enables communication service hosting for interactive mode.
 
-        public RootCommand InitialIdbox()
+        public void InitialIdBox(RootCommand rootCommand)
         {
-            RootCommand idbox = new("idbox");
-            Command box = new("box");
-            Command create = new("create");
-            Command open = new("open");
-            Command ids = new("ids");
-            Command list = new("list");
-            Command setPrimary = new("setPrimary");
-            Command getPrimary = new("getPrimary");
-            Command id = new("id");
-            Command select = new("select");
-            Command get = new("get");
-            Command info = new("info");
-            Command set = new("set");
-            Command createSeed = new("createSeed");
-            Command beacon = new("beacon");
-            Command activate = new("activate");
+            Command boxCommand = new("box");
+            Command createCommand = new("create");
+            Command openCommand = new("open");
+            Command idsCommand = new("ids");
+            Command listCommand = new("list");
+            Command setPrimaryCommand = new("setPrimary");
+            Command getPrimaryCommand = new("getPrimary");
+            Command idCommand = new("id");
+            Command selectCommand = new("select");
+            Command getCommand = new("get");
+            Command infoCommand = new("info");
+            Command setCommand = new("set");
+            Command createSeedCommand = new("createSeed");
+            Command beaconCommand = new("beacon");
+            Command activateCommand = new("activate");
 
-            idbox.Add(box);
-            box.Add(create);
-            box.Add(open);
-            idbox.Add(ids);
-            idbox.Add(id);
-            ids.Add(list);
-            ids.Add(setPrimary);
-            ids.Add(getPrimary);
-            ids.Add(get);
-            id.Add(select);
-            ids.Add(createSeed);
-            idbox.Add(id);
-            id.Add(select);
-            id.Add(info);
-            idbox.Add(info);
-            info.Add(set);
-            idbox.Add(beacon);
-            info.Add(activate);
+            rootCommand.Add(boxCommand);
+            boxCommand.Add(createCommand);
+            boxCommand.Add(openCommand);
+            rootCommand.Add(idsCommand);
+            rootCommand.Add(idCommand);
+            idsCommand.Add(listCommand);
+            idsCommand.Add(setPrimaryCommand);
+            idsCommand.Add(getPrimaryCommand);
+            idsCommand.Add(getCommand);
+            idCommand.Add(selectCommand);
+            idsCommand.Add(createSeedCommand);
+            rootCommand.Add(idCommand);
+            idCommand.Add(selectCommand);
+            idCommand.Add(infoCommand);
+            rootCommand.Add(infoCommand);
+            infoCommand.Add(setCommand);
+            rootCommand.Add(beaconCommand);
+            infoCommand.Add(activateCommand);
 
             //var cliHandlers = new CliHandlers(Directory.GetCurrentDirectory());
 
             Argument pathArgument = new("path");
-            create.AddArgument(pathArgument);
-            create.Handler = CommandHandler.Create<string>(CreateHandler);
+            createCommand.AddArgument(pathArgument);
+            createCommand.Handler = CommandHandler.Create<string>(CreateHandler);
 
             Argument openArgument = new("interactive");
             openArgument.SetDefaultValue("non-interactive");
             openArgument.AddSuggestions("interactive", "non-interactive");
-            open.AddArgument(pathArgument);
-            open.AddArgument(openArgument);
-            open.Handler = CommandHandler.Create<string, string>(OpenHandlerAsync);
+            openCommand.AddArgument(pathArgument);
+            openCommand.AddArgument(openArgument);
+            openCommand.Handler = CommandHandler.Create<string, string>(OpenHandlerAsync);
 
-            Argument summaryordetailArgument = new("summaryordetail");
-            summaryordetailArgument.SetDefaultValue("--summary");
-            summaryordetailArgument.AddSuggestions("summary", "detail");
-            list.AddArgument(summaryordetailArgument);
-            list.Handler = CommandHandler.Create(ListHandler);
+            Argument summaryOrDetailArgument = new("summaryordetail");
+            summaryOrDetailArgument.SetDefaultValue("--summary");
+            summaryOrDetailArgument.AddSuggestions("summary", "detail");
+            listCommand.AddArgument(summaryOrDetailArgument);
+            listCommand.Handler = CommandHandler.Create(ListHandler);
 
-            createSeed.Handler = CommandHandler.Create(CreateSeedIdentityHandler);
+            createSeedCommand.Handler = CommandHandler.Create(CreateSeedIdentityHandler);
 
-            getPrimary.Handler = CommandHandler.Create(GetPrimaryHandler);
-            getPrimary.AddAlias("get-primary");
+            getPrimaryCommand.Handler = CommandHandler.Create(GetPrimaryHandler);
+            getPrimaryCommand.AddAlias("get-primary");
 
-            setPrimary.Handler = CommandHandler.Create(SetAsPrimaryHandler);
-            setPrimary.AddAlias("set-primary");
+            setPrimaryCommand.Handler = CommandHandler.Create(SetAsPrimaryHandler);
+            setPrimaryCommand.AddAlias("set-primary");
 
 
             Argument selectArgument = new("identifier");
-            select.AddArgument(pathArgument);
-            select.Handler = CommandHandler.Create<string>(SelectHandler);
+            selectCommand.AddArgument(pathArgument);
+            selectCommand.Handler = CommandHandler.Create<string>(SelectHandler);
 
-            get.AddArgument(selectArgument);
-            get.Handler = CommandHandler.Create(GetSelectedIdentityHandler);
+            getCommand.AddArgument(selectArgument);
+            getCommand.Handler = CommandHandler.Create(GetSelectedIdentityHandler);
 
             Option<string> keyOption = new("--key", () => "");
             Option<string> valueOption = new("--value", () => "");
-            set.AddArgument(summaryordetailArgument);
-            set.Handler = CommandHandler.Create(SetInfoHandler);
-            activate.Handler = CommandHandler.Create(ActivateBeaconHandler);
-
-            return idbox;
+            setCommand.AddArgument(summaryOrDetailArgument);
+            setCommand.Handler = CommandHandler.Create(SetInfoHandler);
+            activateCommand.Handler = CommandHandler.Create(ActivateBeaconHandler);
         }
 
 
@@ -155,12 +152,13 @@ namespace UniversalIdentity.Cli.Offline
                         args = Console.ReadLine();
                     }
 
-                    RootCommand idbox = InitialIdbox();
+                    RootCommand rootCommand = new("uid");
+                    InitialIdBox(rootCommand);
 
                     if (args == "exit")
                         break;
 
-                    await idbox.InvokeAsync(args);
+                    await rootCommand.InvokeAsync(args);
                 }
             }
         }

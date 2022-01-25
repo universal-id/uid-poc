@@ -21,7 +21,7 @@ namespace OnlineClient
             InitializeComponent();
             IConfigurationBuilder? configurationBuilder = new ConfigurationBuilder()
          //.SetBasePath(Directory.GetCurrentDirectory())
-         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+         .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             Configuration = configurationBuilder.Build();
 

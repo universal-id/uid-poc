@@ -14,7 +14,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  DotNetVersion: 6.0.100
+  DotNetVersion: 6.0.200
   DotNet.Cli.Telemetry.OptOut: true
   MauiCheck.Version: 0.10.0
   LogDirectory: $(Build.ArtifactStagingDirectory)\logs
@@ -27,17 +27,20 @@ steps:
     packageType: 'sdk'
     version: '$(DotNetVersion)'
 
-- powershell: |
-    & dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version)
-    & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --skip edgewebview2
-  displayName: Perform maui-check
-  errorActionPreference: silentlyContinue
+# - powershell: |
+#     & dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version)
+#     & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --skip edgewebview2
+#   displayName: Perform maui-check
+#   errorActionPreference: stop
   
 
-# - powershell: |
-#     & dotnet workload install maui 
-#   displayName: Install MAUI workload
-#   errorActionPreference: stop
+- powershell: |
+    & dotnet workload install maui 
+  displayName: Install MAUI workload
+  errorActionPreference: stop
+
+
+
 
 - task: DotNetCoreCLI@2
   displayName: Restore

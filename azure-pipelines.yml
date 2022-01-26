@@ -14,7 +14,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  DotNetVersion: 6.0.200
+  DotNetVersion: 6.0.100
   DotNet.Cli.Telemetry.OptOut: true
   MauiCheck.Version: 0.10.0
   LogDirectory: $(Build.ArtifactStagingDirectory)\logs

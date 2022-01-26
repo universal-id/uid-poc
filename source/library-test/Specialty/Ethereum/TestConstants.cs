@@ -7,7 +7,8 @@ public static partial class TestConstants
         get
         {
             IConfigurationBuilder configBuilder = new ConfigurationBuilder()
-                .AddUserSecrets(typeof(TestConstants).Assembly, true);
+                .AddUserSecrets(typeof(TestConstants).Assembly, true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
             IConfigurationRoot configuration = configBuilder.Build();
             return configuration;
         }

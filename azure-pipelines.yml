@@ -39,7 +39,7 @@ steps:
     $appSettings.TestInfuraProjectId = "$(testInfuraProjectId)"
     $appSettings | ConvertTo-Json | set-content $pathToJson
   displayName: 'Update AppSettings file before testing'
-  
+
 - script: echo "$(testMnemonic)"
 - script: echo "$(testInfuraProjectId)"
 
@@ -50,7 +50,9 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    Contents: secret.txt
+    Contents: |
+    secret.txt
+    source/library-test/appsettings.json
     targetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1

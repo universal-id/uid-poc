@@ -27,10 +27,16 @@ steps:
     packageType: 'sdk'
     version: '$(DotNetVersion)'
 
+# - powershell: |
+#     & dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version)
+#     & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --skip edgewebview2
+#   displayName: Perform maui-check
+#   errorActionPreference: stop
+  
+
 - powershell: |
-    & dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version)
-    & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --skip edgewebview2
-  displayName: Perform maui-check
+    & dotnet workload install maui 
+  displayName: Install MAUI workload
   errorActionPreference: stop
 
 - task: DotNetCoreCLI@2
@@ -63,8 +69,8 @@ steps:
 - powershell: | 
     $pathToJson = "source/library-test/appsettings.json"
     $a = Get-Content $pathToJson | ConvertFrom-Json
-    $a.TestMnemonic = $(testMnemonic)
-    $a.TestInfuraProjectId =  $(testInfuraProjectId)
+    $a.TestMnemonic = '$(testMnemonic)'
+    $a.TestInfuraProjectId =  '$(testInfuraProjectId)'
     $a | ConvertTo-Json | set-content $pathToJson
   displayName: 'Update AppSettings file before testing'
 

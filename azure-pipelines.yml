@@ -50,9 +50,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    Contents: |
-    secret.txt
-    source/library-test/appsettings.json
+    Contents: source/library-test/appsettings.json
     targetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1

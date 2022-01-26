@@ -39,8 +39,7 @@ steps:
     $appSettings.TestInfuraProjectId = "$(testInfuraProjectId)"
     $appSettings | ConvertTo-Json | set-content $pathToJson
   displayName: 'Update AppSettings file before testing'
-
-- script: type "source/library-test/appsettings.json"
+  
 - script: echo "$(testMnemonic)"
 - script: echo "$(testInfuraProjectId)"
 

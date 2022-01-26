@@ -31,7 +31,7 @@ steps:
     & dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version)
     & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --skip edgewebview2
   displayName: Perform maui-check
-  errorActionPreference: continue
+  errorActionPreference: silentlyContinue
   
 
 # - powershell: |

@@ -27,17 +27,17 @@ steps:
     packageType: 'sdk'
     version: '$(DotNetVersion)'
 
-# - powershell: |
-#     & dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version)
-#     & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --skip edgewebview2
-#   displayName: Perform maui-check
-#   errorActionPreference: stop
+- powershell: |
+    & dotnet tool update --global redth.net.maui.check --version $(MauiCheck.Version)
+    & maui-check --ci --non-interactive --fix --skip androidsdk --skip xcode --skip vswin --skip vsmac --skip edgewebview2
+  displayName: Perform maui-check
+  errorActionPreference: continue
   
 
-- powershell: |
-    & dotnet workload install maui 
-  displayName: Install MAUI workload
-  errorActionPreference: stop
+# - powershell: |
+#     & dotnet workload install maui 
+#   displayName: Install MAUI workload
+#   errorActionPreference: stop
 
 - task: DotNetCoreCLI@2
   displayName: Restore

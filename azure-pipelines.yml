@@ -18,7 +18,7 @@ variables:
   DotNet.Cli.Telemetry.OptOut: true
   MauiCheck.Version: 0.10.0
   LogDirectory: $(Build.ArtifactStagingDirectory)\logs
-  System.Debug: true
+  System.Debug: false
 
 steps:
 
@@ -29,9 +29,6 @@ steps:
     SecretsFilter: '*'
     RunAsPreJob: true
 
-- script: echo "$(testMnemonic)"
-- script: echo "$(testInfuraProjectId)"
-
 - powershell: | 
     $pathToJson = "source/library-test/appsettings.json"
     $appSettings = Get-Content $pathToJson | ConvertFrom-Json
@@ -39,25 +36,6 @@ steps:
     $appSettings.TestInfuraProjectId = "$(testInfuraProjectId)"
     $appSettings | ConvertTo-Json | set-content $pathToJson
   displayName: 'Update AppSettings file before testing'
-
-- script: echo "$(testMnemonic)"
-- script: echo "$(testInfuraProjectId)"
-
-
-- task: CmdLine@2
-  inputs:
-    script: 'echo $(testMnemonic) > secret.txt'
-
-- task: CopyFiles@2
-  inputs:
-    Contents: source/library-test/appsettings.json
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
 
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK'
@@ -117,3 +95,24 @@ steps:
     projects: '$(solution)'
     publishTestResults: true
     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+
+
+- task: CopyFiles@2
+  inputs:
+    Contents: |
+      source/cli/bin/
+      source/online-poc/online-service/bin
+      source/online-poc/online-client/bin
+      source/online-poc/contacts-service/bin
+      source/online-poc/contacts-client/bin
+    targetFolder: '$(Build.ArtifactStagingDirectory)'
+  displayName: Copy build artifacts
+  
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: Publish build artifacts
+  

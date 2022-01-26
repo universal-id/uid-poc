@@ -18,8 +18,16 @@ variables:
   DotNet.Cli.Telemetry.OptOut: true
   MauiCheck.Version: 0.10.0
   LogDirectory: $(Build.ArtifactStagingDirectory)\logs
+  System.Debug: true
 
 steps:
+
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'Azure for startups(0c7c832b-f1c2-4926-8e90-c6e869b07ff2)'
+    KeyVaultName: 'uid-poc-dev'
+    SecretsFilter: '*'
+    RunAsPreJob: true
 
 - task: UseDotNet@2
   displayName: 'Install .NET Core SDK'
@@ -33,20 +41,29 @@ steps:
 #   displayName: Perform maui-check
 #   errorActionPreference: stop
   
-
-- powershell: |
-    & dotnet workload install maui 
-  displayName: Install MAUI workload
-  errorActionPreference: stop
-
 - task: JavaToolInstaller@0
   inputs:
     versionSpec: '11'
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
+  displayName: Install Java SDK 11
+  
+- powershell: |
+    & dotnet workload install maui 
+  displayName: Install MAUI workload
+  errorActionPreference: stop
+
+- powershell: | 
+    $pathToJson = "source/library-test/appsettings.json"
+    $a = Get-Content $pathToJson | ConvertFrom-Json
+    $a.TestMnemonic = '$(testMnemonic)'
+    $a.TestInfuraProjectId = '$(testInfuraProjectId)'
+    $a | ConvertTo-Json | set-content $pathToJson
+  displayName: 'Update AppSettings file before testing'
+
 
 - task: DotNetCoreCLI@2
-  displayName: Restore
+  displayName: Restore NuGet packages
   inputs:
     command: restore
     projects: '$(solution)'
@@ -64,21 +81,6 @@ steps:
 #     & dotnet build source\online-poc\OnlinePoc.sln -c Release -bl:$(LogDirectory)\Release.binlog
 #   displayName: Build all solutions in Release
 #   errorActionPreference: stop
-
-- task: AzureKeyVault@2
-  inputs:
-    azureSubscription: 'Azure for startups(0c7c832b-f1c2-4926-8e90-c6e869b07ff2)'
-    KeyVaultName: 'uid-poc-dev'
-    SecretsFilter: '*'
-    RunAsPreJob: false
-
-- powershell: | 
-    $pathToJson = "source/library-test/appsettings.json"
-    $a = Get-Content $pathToJson | ConvertFrom-Json
-    $a.TestMnemonic = '$(testMnemonic)'
-    $a.TestInfuraProjectId =  '$(testInfuraProjectId)'
-    $a | ConvertTo-Json | set-content $pathToJson
-  displayName: 'Update AppSettings file before testing'
 
 - task: DotNetCoreCLI@2
   displayName: Build

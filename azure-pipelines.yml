@@ -53,6 +53,14 @@ steps:
 #   displayName: Build all solutions in Release
 #   errorActionPreference: stop
 
+- displayName: 'Update AppSettings file before testing'
+  powershell: | 
+    $pathToJson = "source/library-test/appsettings.json"
+    $a = Get-Content $pathToJson | ConvertFrom-Json
+    $a.TestMnemonic = ${{parameters.test-mnemonic}}
+    $a.TestInfuraProjectId =  ${{parameters.test-infura-project-id}} 
+    $a | ConvertTo-Json | set-content $pathToJson
+
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:

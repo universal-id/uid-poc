@@ -71,11 +71,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     Contents: |
-      source/cli/bin/
-      source/online-poc/online-service/bin
-      source/online-poc/online-client/bin
-      source/online-poc/contacts-service/bin
-      source/online-poc/contacts-client/bin
+      source\**\bin\**
     targetFolder: '$(Build.ArtifactStagingDirectory)'
   displayName: Copy build artifacts
   

@@ -14,10 +14,13 @@ namespace UniversalIdentity.Cli
     {
         static async Task Main(string[] args)
         {
-            OfflineCliHandlers cliHandlers = new OfflineCliHandlers(Directory.GetCurrentDirectory());
-            RootCommand idbox = cliHandlers.InitialIdbox();
+            var cliPath = Directory.GetCurrentDirectory();
+            OfflineCliHandlers cliHandlers = new OfflineCliHandlers(cliPath);
 
-            await idbox.InvokeAsync(args);
+            RootCommand rootCommand = new("uid");
+            cliHandlers.InitialIdBox(rootCommand);
+
+            await rootCommand.InvokeAsync(args);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Numerics;
 using Microsoft.Extensions.Configuration;
 
 public static partial class TestConstants
@@ -7,8 +8,8 @@ public static partial class TestConstants
         get
         {
             IConfigurationBuilder configBuilder = new ConfigurationBuilder()
-                .AddUserSecrets(typeof(TestConstants).Assembly, true)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddUserSecrets(typeof(TestConstants).Assembly, true);
             IConfigurationRoot configuration = configBuilder.Build();
             return configuration;
         }
@@ -40,15 +41,16 @@ public static partial class TestConstants
         }
     }
     private static string? testInfuraProjectId;
-    public const string TestSystemContractAddress = "0x7fd24e5dc5a96852d617f5c412d62f637481ba2f";
-    public const string TestIdentityContractAddress = "0xbcd71806179845c9c5cc8c42cde33c241e706c23";    
+    // public const string TestSystemContractAddress = "0x7fd24e5dc5a96852d617f5c412d62f637481ba2f";
+    // public const string TestIdentityContractAddress = "0xbcd71806179845c9c5cc8c42cde33c241e706c23";    
     public const string TestNetName = "rinkeby";
+    public static BigInteger TestNetChainId = new BigInteger(4);
 
-    public const string ZeroAddress = "0x0000000000000000000000000000000000000000";
+    // public const string ZeroAddress = "0x0000000000000000000000000000000000000000";
 
-    public const string TestOperatorIdentifier = "0xabcdee5dc5a96852d617f5c412d62f63748edcba";
+    // public const string TestOperatorIdentifier = "0xabcdee5dc5a96852d617f5c412d62f63748edcba";
 
-    public const string TestServiceIdentifier = "0xedcbae5dc5a96852d617f5c412d62f63748abcde";
+    // public const string TestServiceIdentifier = "0xedcbae5dc5a96852d617f5c412d62f63748abcde";
 
     public static string GetInfuraUrl()
     {

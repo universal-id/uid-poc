@@ -22,8 +22,8 @@ namespace UniversalIdentity.Library.Test.Specialized.Ethereum
         public static Account GetAccount()
         {
             var wallet = new Wallet(TestConstants.TestMnemonic, null);
-            var account = wallet.GetAccount(2); 
-            Console.WriteLine($"Address : {account.Address} - Private key : {account.PrivateKey}");
+            var account = wallet.GetAccount(2, TestConstants.TestNetChainId); 
+            Console.WriteLine($"Address : {account.Address} - Private key : {account.PrivateKey.Substring(0,6)}...");
             return account;
         }
 

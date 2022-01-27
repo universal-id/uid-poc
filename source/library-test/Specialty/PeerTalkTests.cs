@@ -1,17 +1,8 @@
 using System;
 using Xunit;
-using Nethereum.Signer;
-using Nethereum.Util;
-using Nethereum.Hex.HexConvertors.Extensions;
 using System.Linq;
 using FluentAssertions;
 using Xunit.Abstractions;
-using Microsoft.Extensions.Logging;
-using Nethereum.HdWallet;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Crypto.Generators;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Asn1.X9;
 using Ipfs;
 using PeerTalk;
 using System.Threading.Tasks;
@@ -48,7 +39,9 @@ namespace UniversalIdentity.Library.Test.Specialized
             }            
         }
 
+        #if MANUAL
         [Fact]
+        #endif
         public async Task ListenAndConnectTest()
         {
             using (var testContext = new TestContext(nameof(ListenAndConnectTest), this))
@@ -242,7 +235,9 @@ namespace UniversalIdentity.Library.Test.Specialized
             }            
         }
 
-          [Fact]
+        #if MANUAL
+        [Fact]
+        #endif
         public async Task CustomPingProtocolTest()
         {
             using (var testContext = new TestContext(nameof(ListenAndConnectTest), this))

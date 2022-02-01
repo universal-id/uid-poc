@@ -1,15 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+    <UserSecretsId>65c9ce73-b368-48ed-875f-b55556913fdf</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.1.0" />
     <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0-rc.2.21480.5" />
  
     <PackageReference Include="Nethereum.HdWallet" Version="4.1.1" />
@@ -32,5 +35,10 @@
   <ItemGroup>
     <ProjectReference Include="..\library\Library.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+		<None Update="appsettings.json" CopyToOutputDirectory="Always"/>
+		<None Update="secrets.json" CopyToOutputDirectory="Always"/>
+	</ItemGroup>
 
 </Project>
